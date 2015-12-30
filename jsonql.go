@@ -29,7 +29,6 @@ func (this *JSONQL) Parse(where string) (interface{}, error) {
 		Operators: SqlOperators,
 	}
 	tokens := parser.Tokenize(where)
-	//fmt.Println(expression, tokens)
 	rpn, err := parser.ParseRPN(tokens)
 	if err != nil {
 		return nil, err
@@ -39,7 +38,8 @@ func (this *JSONQL) Parse(where string) (interface{}, error) {
 	case []interface{}:
 		ret := []interface{}{}
 		for _, obj := range v {
-			r, err := this.processObj(obj, parser, rpn)
+			parser.Data = obj
+			r, err := this.processObj(parser, rpn)
 			if err != nil {
 				return nil, err
 			}
@@ -49,15 +49,15 @@ func (this *JSONQL) Parse(where string) (interface{}, error) {
 		}
 		return ret, nil
 	case map[string]interface{}:
-		return this.processObj(v, parser, rpn)
+		parser.Data = v
+		return this.processObj(parser, rpn)
 	default:
 		return nil, errors.New(fmt.Sprintf("Failed to parse input data."))
 	}
 	return nil, nil
 }
 
-func (this *JSONQL) processObj(obj interface{}, parser *Parser, rpn *Lifo) (bool, error) {
-	fmt.Println(obj)
+func (this *JSONQL) processObj(parser *Parser, rpn *Lifo) (bool, error) {
 	result, err := parser.Evaluate(rpn, true)
 	if err != nil {
 		return false, err

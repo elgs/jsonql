@@ -14,6 +14,7 @@ type Operator struct {
 
 type Parser struct {
 	Operators   map[string]*Operator
+	Data        interface{}
 	maxOpLen    int
 	initialized bool
 }
