@@ -37,11 +37,19 @@ func (this *JSONQL) Parse(where string) (interface{}, error) {
 
 	switch v := this.JQ.Data.(type) {
 	case []interface{}:
+		ret := []interface{}{}
 		for _, obj := range v {
-			this.processObj(obj, parser, rpn)
+			r, err := this.processObj(obj, parser, rpn)
+			if err != nil {
+				return nil, err
+			}
+			if r {
+				ret = append(ret, obj)
+			}
 		}
+		return ret, nil
 	case map[string]interface{}:
-		this.processObj(v, parser, rpn)
+		return this.processObj(v, parser, rpn)
 	default:
 		return nil, errors.New(fmt.Sprintf("Failed to parse input data."))
 	}

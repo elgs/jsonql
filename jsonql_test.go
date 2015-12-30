@@ -45,11 +45,11 @@ func TestParse(t *testing.T) {
 
 	var pass = []struct {
 		in string
-		ex interface{}
+		ex int
 	}{
-		{"[0].name", "elgs"},
-		{"[1].gender", "f"},
-		{"[2].skills.[1]", "Sleeping"},
+		{"[0].name='elgs'", 1},
+		{"[1].gender='f'", 1},
+		{"[2].skills.[1]='Sleeping'", 1},
 	}
 	var fail = []struct {
 		in string
