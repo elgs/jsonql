@@ -3,6 +3,7 @@ package jsonql
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"unicode"
 )
 
@@ -47,8 +48,8 @@ func (this *Parser) Evaluate(ts *Lifo, postfix bool) (string, error) {
 			if postfix {
 				right := newTs.Pop()
 				left := newTs.Pop()
-				l := ""
-				r := ""
+				l := "0"
+				r := "0"
 				if left != nil {
 					l = left.(string)
 				}
@@ -219,7 +220,7 @@ func (this *Parser) Tokenize(exp string) (tokens []string) {
 				opCandidate := ""
 				for j := 0; j < this.maxOpLen && i < len(expRunes)-j-1; j++ {
 					next := string(expRunes[i+j])
-					opCandidateTmp += next
+					opCandidateTmp += strings.ToUpper(next)
 					if this.Operators[opCandidateTmp] != nil {
 						opCandidate = opCandidateTmp
 					}

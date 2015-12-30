@@ -4,6 +4,7 @@ package jsonql
 import (
 	"errors"
 	"fmt"
+	"math"
 	"regexp"
 	"strconv"
 	"strings"
@@ -62,9 +63,34 @@ var SqlOperators = map[string]*Operator{
 		Precedence: 5,
 		Eval:       evalSql,
 	},
+	"+": &Operator{
+		Precedence: 1,
+		Eval:       evalSql,
+	},
+	"-": &Operator{
+		Precedence: 1,
+		Eval:       evalSql,
+	},
+	"*": &Operator{
+		Precedence: 3,
+		Eval:       evalSql,
+	},
+	"/": &Operator{
+		Precedence: 3,
+		Eval:       evalSql,
+	},
+	"%": &Operator{
+		Precedence: 3,
+		Eval:       evalSql,
+	},
+	"^": &Operator{
+		Precedence: 4,
+		Eval:       evalSql,
+	},
 }
 
 func evalSql(op string, left string, right string) (string, error) {
+	isDec := strings.Contains(left, ".") || strings.Contains(right, ".") || op == "/"
 	switch op {
 	case "AND":
 		l, err := strconv.ParseBool(left)
@@ -164,6 +190,71 @@ func evalSql(op string, left string, right string) (string, error) {
 				return "false", err
 			}
 			return strconv.FormatBool(matches), nil
+		}
+	case "+":
+		if isDec {
+			l, err := strconv.ParseFloat(left, 64)
+			r, err := strconv.ParseFloat(right, 64)
+			return fmt.Sprint(l + r), err
+		} else {
+			l, err := strconv.ParseInt(left, 10, 64)
+			r, err := strconv.ParseInt(right, 10, 64)
+			return fmt.Sprint(l + r), err
+		}
+	case "-":
+		if isDec {
+			l, err := strconv.ParseFloat(left, 64)
+			r, err := strconv.ParseFloat(right, 64)
+			return fmt.Sprint(l - r), err
+		} else {
+			l, err := strconv.ParseInt(left, 10, 64)
+			r, err := strconv.ParseInt(right, 10, 64)
+			return fmt.Sprint(l - r), err
+		}
+	case "*":
+		if isDec {
+			l, err := strconv.ParseFloat(left, 64)
+			r, err := strconv.ParseFloat(right, 64)
+			return fmt.Sprint(l * r), err
+		} else {
+			l, err := strconv.ParseInt(left, 10, 64)
+			r, err := strconv.ParseInt(right, 10, 64)
+			return fmt.Sprint(l * r), err
+		}
+	case "/":
+		if isDec {
+			l, err := strconv.ParseFloat(left, 64)
+			r, err := strconv.ParseFloat(right, 64)
+			if r == 0 {
+				return "", errors.New(fmt.Sprint("Failed to evaluate:", left, op, right))
+			}
+			return fmt.Sprint(l / r), err
+		} else {
+			l, err := strconv.ParseInt(left, 10, 64)
+			r, err := strconv.ParseInt(right, 10, 64)
+			if r == 0 {
+				return "", errors.New(fmt.Sprint("Failed to evaluate:", left, op, right))
+			}
+			return fmt.Sprint(l / r), err
+		}
+	case "%":
+		if isDec {
+			return "", errors.New(fmt.Sprint("Failed to evaluate:", left, op, right))
+		} else {
+			l, err := strconv.ParseInt(left, 10, 64)
+			r, err := strconv.ParseInt(right, 10, 64)
+			if r == 0 {
+				return "", errors.New(fmt.Sprint("Failed to evaluate:", left, op, right))
+			}
+			return fmt.Sprint(l % r), err
+		}
+	case "^":
+		l, err := strconv.ParseFloat(left, 64)
+		r, err := strconv.ParseFloat(right, 64)
+		if isDec {
+			return fmt.Sprint(math.Pow(l, r)), err
+		} else {
+			return fmt.Sprint(int64(math.Pow(l, r))), err
 		}
 	}
 	return "false", errors.New(fmt.Sprint("Failed to evaluate:", left, op, right))
