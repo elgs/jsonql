@@ -121,7 +121,7 @@ func evalSql(op string, left string, right string) (string, error) {
 		if err != nil {
 			return "false", err
 		}
-		return strconv.FormatBool(l || r), nil
+		return strconv.FormatBool(l == r), nil
 	case "!=":
 		return strconv.FormatBool(left != right), nil
 	case ">":
