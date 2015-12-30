@@ -73,6 +73,11 @@ func TestRPN(t *testing.T) {
 	}{
 		{"true AND false", "false"},
 		{"true and true", "true"},
+		{"false and false", "false"},
+		{"true OR true", "true"},
+		{"true OR (true and false)", "true"},
+		{"true and (false and true)", "false"},
+		{"(true and false) or (false or true)", "true"},
 	}
 	var fail = []struct {
 		in string

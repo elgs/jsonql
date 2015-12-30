@@ -102,6 +102,16 @@ func evalSql(op string, left string, right string) (string, error) {
 			return "false", err
 		}
 		return strconv.FormatBool(l && r), nil
+	case "OR":
+		l, err := strconv.ParseBool(left)
+		if err != nil {
+			return "false", err
+		}
+		r, err := strconv.ParseBool(right)
+		if err != nil {
+			return "false", err
+		}
+		return strconv.FormatBool(l || r), nil
 	case "=":
 		l, err := strconv.ParseBool(left)
 		if err != nil {
