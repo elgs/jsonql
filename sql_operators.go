@@ -4,62 +4,61 @@ package jsonql
 import (
 	"errors"
 	"fmt"
-	"github.com/elgs/exparser"
 	"regexp"
 	"strconv"
 	"strings"
 )
 
-var SqlOperators = map[string]*exparser.Operator{
-	"OR": &exparser.Operator{
+var SqlOperators = map[string]*Operator{
+	"OR": &Operator{
 		Precedence: 1,
 		Eval:       evalSql,
 	},
-	"AND": &exparser.Operator{
+	"AND": &Operator{
 		Precedence: 3,
 		Eval:       evalSql,
 	},
-	"=": &exparser.Operator{
+	"=": &Operator{
 		Precedence: 5,
 		Eval:       evalSql,
 	},
-	"!=": &exparser.Operator{
+	"!=": &Operator{
 		Precedence: 5,
 		Eval:       evalSql,
 	},
-	">": &exparser.Operator{
+	">": &Operator{
 		Precedence: 5,
 		Eval:       evalSql,
 	},
-	"<": &exparser.Operator{
+	"<": &Operator{
 		Precedence: 5,
 		Eval:       evalSql,
 	},
-	">=": &exparser.Operator{
+	">=": &Operator{
 		Precedence: 5,
 		Eval:       evalSql,
 	},
-	"<=": &exparser.Operator{
+	"<=": &Operator{
 		Precedence: 5,
 		Eval:       evalSql,
 	},
-	//	"LIKE": &exparser.Operator{
+	//	"LIKE": &Operator{
 	//		Precedence: 5,
 	//		Eval:       evalSql,
 	//	},
-	//	"NOT_LIKE": &exparser.Operator{
+	//	"NOT_LIKE": &Operator{
 	//		Precedence: 5,
 	//		Eval:       evalSql,
 	//	},
-	//	"IS_NULL": &exparser.Operator{
+	//	"IS_NULL": &Operator{
 	//		Precedence: 5,
 	//		Eval:       evalSql,
 	//	},
-	//	"IS_NOT_NULL": &exparser.Operator{
+	//	"IS_NOT_NULL": &Operator{
 	//		Precedence: 5,
 	//		Eval:       evalSql,
 	//	},
-	"RLIKE": &exparser.Operator{
+	"RLIKE": &Operator{
 		Precedence: 5,
 		Eval:       evalSql,
 	},
