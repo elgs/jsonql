@@ -80,20 +80,45 @@ var SqlOperators = map[string]*Operator{
 			if err != nil {
 				return "false", err
 			}
-			sl, foundl := l.(string)
-			sr, foundr := r.(string)
-			if foundl && foundr {
-				return strconv.FormatBool(sl == sr), nil
-			}
-			fl, foundl := l.(float64)
-			if foundl {
-				fr, foundr := r.(float64)
-				if foundr {
-					return strconv.FormatBool(fl == fr), nil
+			sr, oksr := r.(string)
+			if oksr {
+				sl, oksl := l.(string)
+				if oksl {
+					return strconv.FormatBool(sl == sr), nil
 				}
-				ir, foundr := r.(int64)
-				if foundr {
-					return strconv.FormatBool(fl == float64(ir)), nil
+			}
+			ir, okir := r.(int64)
+			if okir {
+				switch vl := l.(type) {
+				case string:
+					il, err := strconv.ParseInt(vl, 10, 0)
+					if err != nil {
+						return "false", nil
+					}
+					return strconv.FormatBool(il == ir), nil
+				case int64:
+					return strconv.FormatBool(vl == ir), nil
+				case float64:
+					return strconv.FormatBool(vl == float64(ir)), nil
+				default:
+					return "false", nil
+				}
+			}
+			fr, okfr := r.(float64)
+			if okfr {
+				switch vl := l.(type) {
+				case string:
+					fl, err := strconv.ParseFloat(vl, 64)
+					if err != nil {
+						return "false", nil
+					}
+					return strconv.FormatBool(fl == fr), nil
+				case int64:
+					return strconv.FormatBool(float64(vl) == fr), nil
+				case float64:
+					return strconv.FormatBool(vl == fr), nil
+				default:
+					return "false", nil
 				}
 			}
 			return "false", errors.New(fmt.Sprint("Failed to compare: ", left, right))
@@ -110,20 +135,45 @@ var SqlOperators = map[string]*Operator{
 			if err != nil {
 				return "false", err
 			}
-			sl, foundl := l.(string)
-			sr, foundr := r.(string)
-			if foundl && foundr {
-				return strconv.FormatBool(sl != sr), nil
-			}
-			fl, foundl := l.(float64)
-			if foundl {
-				fr, foundr := r.(float64)
-				if foundr {
-					return strconv.FormatBool(fl != fr), nil
+			sr, oksr := r.(string)
+			if oksr {
+				sl, oksl := l.(string)
+				if oksl {
+					return strconv.FormatBool(sl != sr), nil
 				}
-				ir, foundr := r.(int64)
-				if foundr {
-					return strconv.FormatBool(fl != float64(ir)), nil
+			}
+			ir, okir := r.(int64)
+			if okir {
+				switch vl := l.(type) {
+				case string:
+					il, err := strconv.ParseInt(vl, 10, 0)
+					if err != nil {
+						return "false", nil
+					}
+					return strconv.FormatBool(il != ir), nil
+				case int64:
+					return strconv.FormatBool(vl != ir), nil
+				case float64:
+					return strconv.FormatBool(vl != float64(ir)), nil
+				default:
+					return "false", nil
+				}
+			}
+			fr, okfr := r.(float64)
+			if okfr {
+				switch vl := l.(type) {
+				case string:
+					fl, err := strconv.ParseFloat(vl, 64)
+					if err != nil {
+						return "false", nil
+					}
+					return strconv.FormatBool(fl != fr), nil
+				case int64:
+					return strconv.FormatBool(float64(vl) != fr), nil
+				case float64:
+					return strconv.FormatBool(vl != fr), nil
+				default:
+					return "false", nil
 				}
 			}
 			return "false", errors.New(fmt.Sprint("Failed to compare: ", left, right))
@@ -140,20 +190,45 @@ var SqlOperators = map[string]*Operator{
 			if err != nil {
 				return "false", err
 			}
-			sl, foundl := l.(string)
-			sr, foundr := r.(string)
-			if foundl && foundr {
-				return strconv.FormatBool(sl > sr), nil
-			}
-			fl, foundl := l.(float64)
-			if foundl {
-				fr, foundr := r.(float64)
-				if foundr {
-					return strconv.FormatBool(fl > fr), nil
+			sr, oksr := r.(string)
+			if oksr {
+				sl, oksl := l.(string)
+				if oksl {
+					return strconv.FormatBool(sl > sr), nil
 				}
-				ir, foundr := r.(int64)
-				if foundr {
-					return strconv.FormatBool(fl > float64(ir)), nil
+			}
+			ir, okir := r.(int64)
+			if okir {
+				switch vl := l.(type) {
+				case string:
+					il, err := strconv.ParseInt(vl, 10, 0)
+					if err != nil {
+						return "false", nil
+					}
+					return strconv.FormatBool(il > ir), nil
+				case int64:
+					return strconv.FormatBool(vl > ir), nil
+				case float64:
+					return strconv.FormatBool(vl > float64(ir)), nil
+				default:
+					return "false", nil
+				}
+			}
+			fr, okfr := r.(float64)
+			if okfr {
+				switch vl := l.(type) {
+				case string:
+					fl, err := strconv.ParseFloat(vl, 64)
+					if err != nil {
+						return "false", nil
+					}
+					return strconv.FormatBool(fl > fr), nil
+				case int64:
+					return strconv.FormatBool(float64(vl) > fr), nil
+				case float64:
+					return strconv.FormatBool(vl > fr), nil
+				default:
+					return "false", nil
 				}
 			}
 			return "false", errors.New(fmt.Sprint("Failed to compare: ", left, right))
@@ -170,20 +245,45 @@ var SqlOperators = map[string]*Operator{
 			if err != nil {
 				return "false", err
 			}
-			sl, foundl := l.(string)
-			sr, foundr := r.(string)
-			if foundl && foundr {
-				return strconv.FormatBool(sl < sr), nil
-			}
-			fl, foundl := l.(float64)
-			if foundl {
-				fr, foundr := r.(float64)
-				if foundr {
-					return strconv.FormatBool(fl < fr), nil
+			sr, oksr := r.(string)
+			if oksr {
+				sl, oksl := l.(string)
+				if oksl {
+					return strconv.FormatBool(sl < sr), nil
 				}
-				ir, foundr := r.(int64)
-				if foundr {
-					return strconv.FormatBool(fl < float64(ir)), nil
+			}
+			ir, okir := r.(int64)
+			if okir {
+				switch vl := l.(type) {
+				case string:
+					il, err := strconv.ParseInt(vl, 10, 0)
+					if err != nil {
+						return "false", nil
+					}
+					return strconv.FormatBool(il < ir), nil
+				case int64:
+					return strconv.FormatBool(vl < ir), nil
+				case float64:
+					return strconv.FormatBool(vl < float64(ir)), nil
+				default:
+					return "false", nil
+				}
+			}
+			fr, okfr := r.(float64)
+			if okfr {
+				switch vl := l.(type) {
+				case string:
+					fl, err := strconv.ParseFloat(vl, 64)
+					if err != nil {
+						return "false", nil
+					}
+					return strconv.FormatBool(fl < fr), nil
+				case int64:
+					return strconv.FormatBool(float64(vl) < fr), nil
+				case float64:
+					return strconv.FormatBool(vl < fr), nil
+				default:
+					return "false", nil
 				}
 			}
 			return "false", errors.New(fmt.Sprint("Failed to compare: ", left, right))
@@ -200,20 +300,45 @@ var SqlOperators = map[string]*Operator{
 			if err != nil {
 				return "false", err
 			}
-			sl, foundl := l.(string)
-			sr, foundr := r.(string)
-			if foundl && foundr {
-				return strconv.FormatBool(sl >= sr), nil
-			}
-			fl, foundl := l.(float64)
-			if foundl {
-				fr, foundr := r.(float64)
-				if foundr {
-					return strconv.FormatBool(fl >= fr), nil
+			sr, oksr := r.(string)
+			if oksr {
+				sl, oksl := l.(string)
+				if oksl {
+					return strconv.FormatBool(sl >= sr), nil
 				}
-				ir, foundr := r.(int64)
-				if foundr {
-					return strconv.FormatBool(fl >= float64(ir)), nil
+			}
+			ir, okir := r.(int64)
+			if okir {
+				switch vl := l.(type) {
+				case string:
+					il, err := strconv.ParseInt(vl, 10, 0)
+					if err != nil {
+						return "false", nil
+					}
+					return strconv.FormatBool(il >= ir), nil
+				case int64:
+					return strconv.FormatBool(vl >= ir), nil
+				case float64:
+					return strconv.FormatBool(vl >= float64(ir)), nil
+				default:
+					return "false", nil
+				}
+			}
+			fr, okfr := r.(float64)
+			if okfr {
+				switch vl := l.(type) {
+				case string:
+					fl, err := strconv.ParseFloat(vl, 64)
+					if err != nil {
+						return "false", nil
+					}
+					return strconv.FormatBool(fl <= fr), nil
+				case int64:
+					return strconv.FormatBool(float64(vl) <= fr), nil
+				case float64:
+					return strconv.FormatBool(vl <= fr), nil
+				default:
+					return "false", nil
 				}
 			}
 			return "false", errors.New(fmt.Sprint("Failed to compare: ", left, right))
@@ -230,20 +355,45 @@ var SqlOperators = map[string]*Operator{
 			if err != nil {
 				return "false", err
 			}
-			sl, foundl := l.(string)
-			sr, foundr := r.(string)
-			if foundl && foundr {
-				return strconv.FormatBool(sl <= sr), nil
-			}
-			fl, foundl := l.(float64)
-			if foundl {
-				fr, foundr := r.(float64)
-				if foundr {
-					return strconv.FormatBool(fl <= fr), nil
+			sr, oksr := r.(string)
+			if oksr {
+				sl, oksl := l.(string)
+				if oksl {
+					return strconv.FormatBool(sl <= sr), nil
 				}
-				ir, foundr := r.(int64)
-				if foundr {
-					return strconv.FormatBool(fl <= float64(ir)), nil
+			}
+			ir, okir := r.(int64)
+			if okir {
+				switch vl := l.(type) {
+				case string:
+					il, err := strconv.ParseInt(vl, 10, 0)
+					if err != nil {
+						return "false", nil
+					}
+					return strconv.FormatBool(il <= ir), nil
+				case int64:
+					return strconv.FormatBool(vl <= ir), nil
+				case float64:
+					return strconv.FormatBool(vl <= float64(ir)), nil
+				default:
+					return "false", nil
+				}
+			}
+			fr, okfr := r.(float64)
+			if okfr {
+				switch vl := l.(type) {
+				case string:
+					fl, err := strconv.ParseFloat(vl, 64)
+					if err != nil {
+						return "false", nil
+					}
+					return strconv.FormatBool(fl <= fr), nil
+				case int64:
+					return strconv.FormatBool(float64(vl) <= fr), nil
+				case float64:
+					return strconv.FormatBool(vl <= fr), nil
+				default:
+					return "false", nil
 				}
 			}
 			return "false", errors.New(fmt.Sprint("Failed to compare: ", left, right))
@@ -356,7 +506,7 @@ var SqlOperators = map[string]*Operator{
 		},
 	},
 	"^": &Operator{
-		Precedence: 8,
+		Precedence: 10,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			isDec := strings.Contains(left, ".") || strings.Contains(right, ".")
 			l, err := strconv.ParseFloat(left, 64)
