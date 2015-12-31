@@ -87,110 +87,135 @@ var SqlOperators = map[string]*Operator{
 	"!=": &Operator{
 		Precedence: 5,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
-			return strconv.FormatBool(left != right), nil
+			l, err := evalToken(symbolTable, left)
+			if err != nil {
+				return "false", err
+			}
+			r, err := evalToken(symbolTable, right)
+			if err != nil {
+				return "false", err
+			}
+			return strconv.FormatBool(l != r), nil
 		},
 	},
 	">": &Operator{
 		Precedence: 5,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
-			if strings.HasPrefix(right, "'") && strings.HasSuffix(right, "'") {
-				r := right[1 : len(right)-1]
-				return strconv.FormatBool(left > r), nil
-			} else {
-				l, err := strconv.ParseFloat(left, 64)
-				if err != nil {
-					return "false", err
-				}
-				r, err := strconv.ParseFloat(right, 64)
-				if err != nil {
-					return "false", err
-				}
-				return strconv.FormatBool(l > r), nil
+			l, err := evalToken(symbolTable, left)
+			if err != nil {
+				return "false", err
 			}
+			r, err := evalToken(symbolTable, right)
+			if err != nil {
+				return "false", err
+			}
+			sl, fl := l.(string)
+			sr, fr := r.(string)
+			if fl && fr {
+				return strconv.FormatBool(sl > sr), nil
+			}
+			il, fl := l.(float64)
+			ir, fr := r.(float64)
+			if fl && fr {
+				return strconv.FormatBool(il > ir), nil
+			}
+			return "false", errors.New(fmt.Sprint("Failed to compare: ", left, right))
 		},
 	},
 	"<": &Operator{
 		Precedence: 5,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
-			if strings.HasPrefix(right, "'") && strings.HasSuffix(right, "'") {
-				r := right[1 : len(right)-1]
-				return strconv.FormatBool(left < r), nil
-			} else {
-				l, err := strconv.ParseFloat(left, 64)
-				if err != nil {
-					return "false", err
-				}
-				r, err := strconv.ParseFloat(right, 64)
-				if err != nil {
-					return "false", err
-				}
-				return strconv.FormatBool(l < r), nil
+			l, err := evalToken(symbolTable, left)
+			if err != nil {
+				return "false", err
 			}
+			r, err := evalToken(symbolTable, right)
+			if err != nil {
+				return "false", err
+			}
+			sl, fl := l.(string)
+			sr, fr := r.(string)
+			if fl && fr {
+				return strconv.FormatBool(sl < sr), nil
+			}
+			il, fl := l.(float64)
+			ir, fr := r.(float64)
+			if fl && fr {
+				return strconv.FormatBool(il < ir), nil
+			}
+			return "false", errors.New(fmt.Sprint("Failed to compare: ", left, right))
 		},
 	},
 	">=": &Operator{
 		Precedence: 5,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
-			if strings.HasPrefix(right, "'") && strings.HasSuffix(right, "'") {
-				r := right[1 : len(right)-1]
-				return strconv.FormatBool(left >= r), nil
-			} else {
-				l, err := strconv.ParseFloat(left, 64)
-				if err != nil {
-					return "false", err
-				}
-				r, err := strconv.ParseFloat(right, 64)
-				if err != nil {
-					return "false", err
-				}
-				return strconv.FormatBool(l >= r), nil
+			l, err := evalToken(symbolTable, left)
+			if err != nil {
+				return "false", err
 			}
+			r, err := evalToken(symbolTable, right)
+			if err != nil {
+				return "false", err
+			}
+			sl, fl := l.(string)
+			sr, fr := r.(string)
+			if fl && fr {
+				return strconv.FormatBool(sl >= sr), nil
+			}
+			il, fl := l.(float64)
+			ir, fr := r.(float64)
+			if fl && fr {
+				return strconv.FormatBool(il >= ir), nil
+			}
+			return "false", errors.New(fmt.Sprint("Failed to compare: ", left, right))
 		},
 	},
 	"<=": &Operator{
 		Precedence: 5,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
-			if strings.HasPrefix(right, "'") && strings.HasSuffix(right, "'") {
-				r := right[1 : len(right)-1]
-				return strconv.FormatBool(left <= r), nil
-			} else {
-				l, err := strconv.ParseFloat(left, 64)
-				if err != nil {
-					return "false", err
-				}
-				r, err := strconv.ParseFloat(right, 64)
-				if err != nil {
-					return "false", err
-				}
-				return strconv.FormatBool(l <= r), nil
+			l, err := evalToken(symbolTable, left)
+			if err != nil {
+				return "false", err
 			}
+			r, err := evalToken(symbolTable, right)
+			if err != nil {
+				return "false", err
+			}
+			sl, fl := l.(string)
+			sr, fr := r.(string)
+			if fl && fr {
+				return strconv.FormatBool(sl <= sr), nil
+			}
+			il, fl := l.(float64)
+			ir, fr := r.(float64)
+			if fl && fr {
+				return strconv.FormatBool(il <= ir), nil
+			}
+			return "false", errors.New(fmt.Sprint("Failed to compare: ", left, right))
 		},
 	},
-	//	"LIKE": &Operator{
-	//		Precedence: 5,
-	//	},
-	//	"NOT_LIKE": &Operator{
-	//		Precedence: 5,
-	//	},
-	//	"IS_NULL": &Operator{
-	//		Precedence: 5,
-	//	},
-	//	"IS_NOT_NULL": &Operator{
-	//		Precedence: 5,
-	//	},
 	"RLIKE": &Operator{
 		Precedence: 5,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
-			if strings.HasPrefix(right, "'") && strings.HasSuffix(right, "'") {
-				r := right[1 : len(right)-1]
-				matches, err := regexp.MatchString(r, left)
+			l, err := evalToken(symbolTable, left)
+			if err != nil {
+				return "false", err
+			}
+			r, err := evalToken(symbolTable, right)
+			if err != nil {
+				return "false", err
+			}
+			sl, fl := l.(string)
+			sr, fr := r.(string)
+			if fl && fr {
+				matches, err := regexp.MatchString(sr, sl)
 				if err != nil {
 					return "false", err
 				}
 				return strconv.FormatBool(matches), nil
-			} else {
-				return "", errors.New(fmt.Sprint("Failed to evaluate:", left, "RLIKE", right))
 			}
+			return "false", errors.New(fmt.Sprint("Failed to compare: ", left, right))
+
 		},
 	},
 	"+": &Operator{
