@@ -1,7 +1,7 @@
 # jsonql
 SQL like JSON query library in Golang.
 
-This library enables query against JSON using SQL like WHERE clause. Currently supported operators are: (precedence from low to high, case insensitive)
+This library enables query against JSON using SQL like WHERE clause. Currently supported operators are: (precedences from low to high, case insensitive)
 
 ```
 OR
