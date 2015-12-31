@@ -18,6 +18,10 @@ Please note I decided not to implement `LIKE` or `NOTE LIKE` operations because 
 ## Install
 `go get -u github.com/elgs/jsonql`
 
+## TDOD
+* Implement `IS NULL` and `IS NOT NULL`
+* Rewrite the arithmetic operations
+
 ## Example
 ```go
 package main
