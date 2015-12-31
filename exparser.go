@@ -9,12 +9,12 @@ import (
 
 type Operator struct {
 	Precedence int
-	Eval       func(op string, left string, right string) (string, error)
+	Eval       func(symbolTable interface{}, left string, right string) (string, error)
 }
 
 type Parser struct {
 	Operators   map[string]*Operator
-	Data        interface{}
+	SymbolTable interface{}
 	maxOpLen    int
 	initialized bool
 }

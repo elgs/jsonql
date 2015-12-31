@@ -38,7 +38,7 @@ func (this *JSONQL) Parse(where string) (interface{}, error) {
 	case []interface{}:
 		ret := []interface{}{}
 		for _, obj := range v {
-			parser.Data = obj
+			parser.SymbolTable = obj
 			r, err := this.processObj(parser, rpn)
 			if err != nil {
 				return nil, err
@@ -49,7 +49,7 @@ func (this *JSONQL) Parse(where string) (interface{}, error) {
 		}
 		return ret, nil
 	case map[string]interface{}:
-		parser.Data = v
+		parser.SymbolTable = v
 		return this.processObj(parser, rpn)
 	default:
 		return nil, errors.New(fmt.Sprintf("Failed to parse input data."))
