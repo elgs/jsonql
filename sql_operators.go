@@ -274,7 +274,7 @@ var SqlOperators = map[string]*Operator{
 		},
 	},
 	"+": &Operator{
-		Precedence: 1,
+		Precedence: 7,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			isDec := strings.Contains(left, ".") || strings.Contains(right, ".")
 			if isDec {
@@ -289,7 +289,7 @@ var SqlOperators = map[string]*Operator{
 		},
 	},
 	"-": &Operator{
-		Precedence: 1,
+		Precedence: 7,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			isDec := strings.Contains(left, ".") || strings.Contains(right, ".")
 			if isDec {
@@ -304,7 +304,7 @@ var SqlOperators = map[string]*Operator{
 		},
 	},
 	"*": &Operator{
-		Precedence: 3,
+		Precedence: 9,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			isDec := strings.Contains(left, ".") || strings.Contains(right, ".")
 			if isDec {
@@ -319,7 +319,7 @@ var SqlOperators = map[string]*Operator{
 		},
 	},
 	"/": &Operator{
-		Precedence: 3,
+		Precedence: 9,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			isDec := strings.Contains(left, ".") || strings.Contains(right, ".")
 			if isDec {
@@ -340,7 +340,7 @@ var SqlOperators = map[string]*Operator{
 		},
 	},
 	"%": &Operator{
-		Precedence: 3,
+		Precedence: 9,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			isDec := strings.Contains(left, ".") || strings.Contains(right, ".")
 			if isDec {
@@ -356,7 +356,7 @@ var SqlOperators = map[string]*Operator{
 		},
 	},
 	"^": &Operator{
-		Precedence: 4,
+		Precedence: 8,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			isDec := strings.Contains(left, ".") || strings.Contains(right, ".")
 			l, err := strconv.ParseFloat(left, 64)
