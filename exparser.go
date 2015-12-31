@@ -42,6 +42,7 @@ func (this *Parser) Evaluate(ts *Lifo, postfix bool) (string, error) {
 	usefulWork := false
 	for ti := ts.Pop(); ti != nil; ti = ts.Pop() {
 		t := ti.(string)
+		//		fmt.Println("t:", t)
 		switch {
 		case this.Operators[t] != nil:
 			// operators
@@ -57,7 +58,7 @@ func (this *Parser) Evaluate(ts *Lifo, postfix bool) (string, error) {
 				if right != nil {
 					r = right.(string)
 				}
-				result, err := this.Operators[t].Eval(t, l, r)
+				result, err := this.Operators[t].Eval(this.SymbolTable, l, r)
 				newTs.Push(result)
 				if err != nil {
 					return "", errors.New(fmt.Sprint("Failed to evaluate:", l, t, r))
@@ -73,7 +74,7 @@ func (this *Parser) Evaluate(ts *Lifo, postfix bool) (string, error) {
 				if right != nil {
 					r = right.(string)
 				}
-				result, err := this.Operators[t].Eval(t, l, r)
+				result, err := this.Operators[t].Eval(this.SymbolTable, l, r)
 				newTs.Push(result)
 				if err != nil {
 					return "", errors.New(fmt.Sprint("Failed to evaluate:", l, t, r))
@@ -173,9 +174,8 @@ func (this *Parser) Tokenize(exp string) (tokens []string) {
 				}
 			}
 		case s == "'":
-			if dq {
-				tmp += s
-			} else {
+			tmp += s
+			if !dq {
 				sq = !sq
 				if !sq {
 					tokens = append(tokens, tmp)
@@ -183,9 +183,8 @@ func (this *Parser) Tokenize(exp string) (tokens []string) {
 				}
 			}
 		case s == "\"":
-			if sq {
-				tmp += s
-			} else {
+			tmp += s
+			if !sq {
 				dq = !dq
 				if !dq {
 					tokens = append(tokens, tmp)

@@ -4,11 +4,30 @@ package jsonql
 import (
 	"errors"
 	"fmt"
+	"github.com/elgs/gojq"
 	"math"
 	"regexp"
 	"strconv"
 	"strings"
 )
+
+func evalToken(symbolTable interface{}, token string) (interface{}, error) {
+	//	fmt.Println("******************")
+	//	fmt.Println(symbolTable)
+	//	fmt.Println(token)
+	//	fmt.Println("******************")
+	v, found := symbolTable.(map[string]interface{})
+	if !found {
+		return nil, errors.New(fmt.Sprint("Failed to parse token: ", token))
+	}
+	if (strings.HasPrefix(token, "'") && strings.HasSuffix(token, "'")) ||
+		(strings.HasPrefix(token, "\"") && strings.HasSuffix(token, "\"")) {
+		// string
+		return token[1 : len(token)-1], nil
+	}
+	jq := gojq.NewQuery(v)
+	return jq.Parse(token)
+}
 
 var SqlOperators = map[string]*Operator{
 	"OR": &Operator{
@@ -22,7 +41,7 @@ var SqlOperators = map[string]*Operator{
 			if err != nil {
 				return "false", err
 			}
-			return strconv.FormatBool(l && r), nil
+			return strconv.FormatBool(l || r), nil
 		},
 	},
 	"AND": &Operator{
@@ -36,20 +55,21 @@ var SqlOperators = map[string]*Operator{
 			if err != nil {
 				return "false", err
 			}
-			return strconv.FormatBool(l || r), nil
+			return strconv.FormatBool(l && r), nil
 		},
 	},
 	"=": &Operator{
 		Precedence: 5,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
-			l, err := strconv.ParseBool(left)
+			l, err := evalToken(symbolTable, left)
 			if err != nil {
 				return "false", err
 			}
-			r, err := strconv.ParseBool(right)
+			r, err := evalToken(symbolTable, right)
 			if err != nil {
 				return "false", err
 			}
+			//			fmt.Println("in =:", l, r, l == r)
 			return strconv.FormatBool(l == r), nil
 		},
 	},
