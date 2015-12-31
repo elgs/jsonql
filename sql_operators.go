@@ -20,10 +20,21 @@ func evalToken(symbolTable interface{}, token string) (interface{}, error) {
 	if !found {
 		return nil, errors.New(fmt.Sprint("Failed to parse token: ", token))
 	}
+	if token == "true" || token == "false" {
+		return token, nil
+	}
 	if (strings.HasPrefix(token, "'") && strings.HasSuffix(token, "'")) ||
 		(strings.HasPrefix(token, "\"") && strings.HasSuffix(token, "\"")) {
 		// string
 		return token[1 : len(token)-1], nil
+	}
+	intToken, err := strconv.ParseInt(token, 10, 0)
+	if err == nil {
+		return intToken, nil
+	}
+	floatToken, err := strconv.ParseFloat(token, 64)
+	if err == nil {
+		return floatToken, nil
 	}
 	jq := gojq.NewQuery(v)
 	return jq.Parse(token)
