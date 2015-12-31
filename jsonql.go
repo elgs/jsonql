@@ -25,7 +25,7 @@ func NewQuery(jsonObject interface{}) *JSONQL {
 	return &JSONQL{jsonObject}
 }
 
-func (this *JSONQL) Parse(where string) (interface{}, error) {
+func (this *JSONQL) Query(where string) (interface{}, error) {
 	parser := &Parser{
 		Operators: SqlOperators,
 	}

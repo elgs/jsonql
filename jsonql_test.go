@@ -57,7 +57,7 @@ func TestParse(t *testing.T) {
 		ex interface{}
 	}{}
 	for _, v := range pass {
-		result, err := parser.Parse(v.in)
+		result, err := parser.Query(v.in)
 		if err != nil {
 			t.Error(v.in, err)
 		}

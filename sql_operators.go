@@ -37,7 +37,7 @@ func evalToken(symbolTable interface{}, token string) (interface{}, error) {
 		return floatToken, nil
 	}
 	jq := gojq.NewQuery(v)
-	return jq.Parse(token)
+	return jq.Query(token)
 }
 
 var SqlOperators = map[string]*Operator{
