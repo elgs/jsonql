@@ -12,13 +12,9 @@ import (
 )
 
 func evalToken(symbolTable interface{}, token string) (interface{}, error) {
-	//	fmt.Println("******************")
-	//	fmt.Println(symbolTable)
-	//	fmt.Println(token)
-	//	fmt.Println("******************")
 	v, found := symbolTable.(map[string]interface{})
 	if !found {
-		return nil, errors.New(fmt.Sprint("Failed to parse token: ", token))
+		v = make(map[string]interface{})
 	}
 	if token == "true" || token == "false" {
 		return token, nil
@@ -426,15 +422,28 @@ var SqlOperators = map[string]*Operator{
 	"+": &Operator{
 		Precedence: 7,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
-			isDec := strings.Contains(left, ".") || strings.Contains(right, ".")
-			if isDec {
-				l, err := strconv.ParseFloat(left, 64)
-				r, err := strconv.ParseFloat(right, 64)
-				return fmt.Sprint(l + r), err
-			} else {
-				l, err := strconv.ParseInt(left, 10, 64)
-				r, err := strconv.ParseInt(right, 10, 64)
-				return fmt.Sprint(l + r), err
+			l, err := evalToken(symbolTable, left)
+			if err != nil {
+				return "false", err
+			}
+			r, err := evalToken(symbolTable, right)
+			if err != nil {
+				return "false", err
+			}
+			il, okil := l.(int64)
+			ir, okir := r.(int64)
+			fl, okfl := l.(float64)
+			fr, okfr := r.(float64)
+			if okil && okir { //ii
+				return fmt.Sprint(il + ir), nil
+			} else if okfl && okfr { //ff
+				return fmt.Sprint(fl + fr), nil
+			} else if okil && okfr { //if
+				return fmt.Sprint(float64(il) + fr), nil
+			} else if okfl && okir { //fi
+				return fmt.Sprint(fl + float64(ir)), nil
+			} else { //else
+				return fmt.Sprint("'", l, r, "'"), nil
 			}
 		},
 	},
