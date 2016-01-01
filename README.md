@@ -20,7 +20,6 @@ Please note I decided not to implement `LIKE` or `NOTE LIKE` operations because 
 
 ## TDOD
 * Implement `IS NULL` and `IS NOT NULL`
-* Rewrite the arithmetic operations
 
 ## Example
 ```go
@@ -92,5 +91,13 @@ func main() {
 	
 	fmt.Println(parser.Query("name RLIKE 'e.*'"))
 	//[map[age:35 skills:[Golang Java C] name:elgs gender:m] map[skills:[IC Electric design Verification] name:enny gender:f age:36]] <nil>
+	
+	fmt.Println(parser.Query("name='el'+'gs'"))
+	fmt.Println(parser.Query("age=30+5.0"))
+	fmt.Println(parser.Query("age=40.0-5"))
+	fmt.Println(parser.Query("age=70-5*7"))
+	fmt.Println(parser.Query("age=70.0/2.0"))
+	fmt.Println(parser.Query("age=71%36"))
+	// [map[name:elgs gender:m age:35 skills:[Golang Java C]]] <nil>
 }
 ```

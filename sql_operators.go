@@ -518,8 +518,8 @@ var SqlOperators = map[string]*Operator{
 			ir, okir := r.(int64)
 			fl, okfl := l.(float64)
 			fr, okfr := r.(float64)
-			if ir == 0 || fr == 0 {
-				return "", errors.New(fmt.Sprint("Failed to evaluate: ", left, right))
+			if (okir && ir == 0) || okfr && fr == 0 {
+				return "", errors.New(fmt.Sprint("Divide by zero: ", left, right))
 			}
 			if okil && okir { //ii
 				return fmt.Sprint(il / ir), nil
@@ -547,7 +547,7 @@ var SqlOperators = map[string]*Operator{
 			}
 			il, okil := l.(int64)
 			ir, okir := r.(int64)
-			if ir == 0 {
+			if okir && ir == 0 {
 				return "", errors.New(fmt.Sprint("Failed to evaluate: ", left, right))
 			}
 			if okil && okir { //ii
