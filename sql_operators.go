@@ -12,10 +12,6 @@ import (
 )
 
 func evalToken(symbolTable interface{}, token string) (interface{}, error) {
-	v, found := symbolTable.(map[string]interface{})
-	if !found {
-		v = make(map[string]interface{})
-	}
 	if token == "true" || token == "false" {
 		return token, nil
 	}
@@ -32,7 +28,7 @@ func evalToken(symbolTable interface{}, token string) (interface{}, error) {
 	if err == nil {
 		return floatToken, nil
 	}
-	jq := gojq.NewQuery(v)
+	jq := gojq.NewQuery(symbolTable)
 	return jq.Query(token)
 }
 

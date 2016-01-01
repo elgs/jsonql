@@ -34,7 +34,6 @@ func (this *JSONQL) Query(where string) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	switch v := this.Data.(type) {
 	case []interface{}:
 		ret := []interface{}{}
@@ -60,10 +59,6 @@ func (this *JSONQL) Query(where string) (interface{}, error) {
 		}
 		return nil, nil
 	default:
-		fmt.Println("v, where:", v, where)
-		if v == where {
-			return v, nil
-		}
 		return nil, errors.New(fmt.Sprintf("Failed to parse input data."))
 	}
 }
@@ -71,6 +66,7 @@ func (this *JSONQL) Query(where string) (interface{}, error) {
 func (this *JSONQL) processObj(parser *Parser, rpn Lifo) (bool, error) {
 	result, err := parser.Evaluate(&rpn, true)
 	if err != nil {
+		fmt.Println(err)
 		return false, nil
 	}
 	return strconv.ParseBool(result)
