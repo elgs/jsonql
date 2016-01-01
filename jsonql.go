@@ -44,8 +44,6 @@ func (this *JSONQL) Query(where string) (interface{}, error) {
 			if err != nil {
 				return nil, err
 			}
-			//			fmt.Println("***")
-			//			fmt.Println(obj, where, r)
 			if r {
 				ret = append(ret, obj)
 			}
@@ -53,8 +51,19 @@ func (this *JSONQL) Query(where string) (interface{}, error) {
 		return ret, nil
 	case map[string]interface{}:
 		parser.SymbolTable = v
-		return this.processObj(parser, *rpn)
+		r, err := this.processObj(parser, *rpn)
+		if err != nil {
+			return nil, err
+		}
+		if r {
+			return v, nil
+		}
+		return nil, nil
 	default:
+		fmt.Println("v, where:", v, where)
+		if v == where {
+			return v, nil
+		}
 		return nil, errors.New(fmt.Sprintf("Failed to parse input data."))
 	}
 }
@@ -62,7 +71,7 @@ func (this *JSONQL) Query(where string) (interface{}, error) {
 func (this *JSONQL) processObj(parser *Parser, rpn Lifo) (bool, error) {
 	result, err := parser.Evaluate(&rpn, true)
 	if err != nil {
-		return false, err
+		return false, nil
 	}
 	return strconv.ParseBool(result)
 }
