@@ -450,80 +450,138 @@ var SqlOperators = map[string]*Operator{
 	"-": &Operator{
 		Precedence: 7,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
-			isDec := strings.Contains(left, ".") || strings.Contains(right, ".")
-			if isDec {
-				l, err := strconv.ParseFloat(left, 64)
-				r, err := strconv.ParseFloat(right, 64)
-				return fmt.Sprint(l - r), err
-			} else {
-				l, err := strconv.ParseInt(left, 10, 64)
-				r, err := strconv.ParseInt(right, 10, 64)
-				return fmt.Sprint(l - r), err
+			l, err := evalToken(symbolTable, left)
+			if err != nil {
+				return "false", err
+			}
+			r, err := evalToken(symbolTable, right)
+			if err != nil {
+				return "false", err
+			}
+			il, okil := l.(int64)
+			ir, okir := r.(int64)
+			fl, okfl := l.(float64)
+			fr, okfr := r.(float64)
+			if okil && okir { //ii
+				return fmt.Sprint(il - ir), nil
+			} else if okfl && okfr { //ff
+				return fmt.Sprint(fl - fr), nil
+			} else if okil && okfr { //if
+				return fmt.Sprint(float64(il) - fr), nil
+			} else if okfl && okir { //fi
+				return fmt.Sprint(fl - float64(ir)), nil
+			} else { //else
+				return "", errors.New(fmt.Sprint("Failed to evaluate: ", left, right))
 			}
 		},
 	},
 	"*": &Operator{
 		Precedence: 9,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
-			isDec := strings.Contains(left, ".") || strings.Contains(right, ".")
-			if isDec {
-				l, err := strconv.ParseFloat(left, 64)
-				r, err := strconv.ParseFloat(right, 64)
-				return fmt.Sprint(l * r), err
-			} else {
-				l, err := strconv.ParseInt(left, 10, 64)
-				r, err := strconv.ParseInt(right, 10, 64)
-				return fmt.Sprint(l * r), err
+			l, err := evalToken(symbolTable, left)
+			if err != nil {
+				return "false", err
+			}
+			r, err := evalToken(symbolTable, right)
+			if err != nil {
+				return "false", err
+			}
+			il, okil := l.(int64)
+			ir, okir := r.(int64)
+			fl, okfl := l.(float64)
+			fr, okfr := r.(float64)
+			if okil && okir { //ii
+				return fmt.Sprint(il * ir), nil
+			} else if okfl && okfr { //ff
+				return fmt.Sprint(fl * fr), nil
+			} else if okil && okfr { //if
+				return fmt.Sprint(float64(il) * fr), nil
+			} else if okfl && okir { //fi
+				return fmt.Sprint(fl * float64(ir)), nil
+			} else { //else
+				return "", errors.New(fmt.Sprint("Failed to evaluate: ", left, right))
 			}
 		},
 	},
 	"/": &Operator{
 		Precedence: 9,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
-			isDec := strings.Contains(left, ".") || strings.Contains(right, ".")
-			if isDec {
-				l, err := strconv.ParseFloat(left, 64)
-				r, err := strconv.ParseFloat(right, 64)
-				if r == 0 {
-					return "", errors.New(fmt.Sprint("Failed to evaluate:", left, "/", right))
-				}
-				return fmt.Sprint(l / r), err
-			} else {
-				l, err := strconv.ParseInt(left, 10, 64)
-				r, err := strconv.ParseInt(right, 10, 64)
-				if r == 0 {
-					return "", errors.New(fmt.Sprint("Failed to evaluate:", left, "/", right))
-				}
-				return fmt.Sprint(l / r), err
+			l, err := evalToken(symbolTable, left)
+			if err != nil {
+				return "false", err
+			}
+			r, err := evalToken(symbolTable, right)
+			if err != nil {
+				return "false", err
+			}
+			il, okil := l.(int64)
+			ir, okir := r.(int64)
+			fl, okfl := l.(float64)
+			fr, okfr := r.(float64)
+			if ir == 0 || fr == 0 {
+				return "", errors.New(fmt.Sprint("Failed to evaluate: ", left, right))
+			}
+			if okil && okir { //ii
+				return fmt.Sprint(il / ir), nil
+			} else if okfl && okfr { //ff
+				return fmt.Sprint(fl / fr), nil
+			} else if okil && okfr { //if
+				return fmt.Sprint(float64(il) / fr), nil
+			} else if okfl && okir { //fi
+				return fmt.Sprint(fl / float64(ir)), nil
+			} else { //else
+				return "", errors.New(fmt.Sprint("Failed to evaluate: ", left, right))
 			}
 		},
 	},
 	"%": &Operator{
 		Precedence: 9,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
-			isDec := strings.Contains(left, ".") || strings.Contains(right, ".")
-			if isDec {
-				return "", errors.New(fmt.Sprint("Failed to evaluate:", left, "/", right))
-			} else {
-				l, err := strconv.ParseInt(left, 10, 64)
-				r, err := strconv.ParseInt(right, 10, 64)
-				if r == 0 {
-					return "", errors.New(fmt.Sprint("Failed to evaluate:", left, "/", right))
-				}
-				return fmt.Sprint(l % r), err
+			l, err := evalToken(symbolTable, left)
+			if err != nil {
+				return "false", err
+			}
+			r, err := evalToken(symbolTable, right)
+			if err != nil {
+				return "false", err
+			}
+			il, okil := l.(int64)
+			ir, okir := r.(int64)
+			if ir == 0 {
+				return "", errors.New(fmt.Sprint("Failed to evaluate: ", left, right))
+			}
+			if okil && okir { //ii
+				return fmt.Sprint(il % ir), nil
+			} else { //else
+				return "", errors.New(fmt.Sprint("Failed to evaluate: ", left, right))
 			}
 		},
 	},
 	"^": &Operator{
 		Precedence: 10,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
-			isDec := strings.Contains(left, ".") || strings.Contains(right, ".")
-			l, err := strconv.ParseFloat(left, 64)
-			r, err := strconv.ParseFloat(right, 64)
-			if isDec {
-				return fmt.Sprint(math.Pow(l, r)), err
-			} else {
-				return fmt.Sprint(int64(math.Pow(l, r))), err
+			l, err := evalToken(symbolTable, left)
+			if err != nil {
+				return "false", err
+			}
+			r, err := evalToken(symbolTable, right)
+			if err != nil {
+				return "false", err
+			}
+			il, okil := l.(int64)
+			ir, okir := r.(int64)
+			fl, okfl := l.(float64)
+			fr, okfr := r.(float64)
+			if okil && okir { //ii
+				return fmt.Sprint(math.Pow(float64(il), float64(ir))), nil
+			} else if okfl && okfr { //ff
+				return fmt.Sprint(math.Pow(fl, fr)), nil
+			} else if okil && okfr { //if
+				return fmt.Sprint(math.Pow(float64(il), fr)), nil
+			} else if okfl && okir { //fi
+				return fmt.Sprint(math.Pow(fl, float64(ir))), nil
+			} else { //else
+				return "", errors.New(fmt.Sprint("Failed to evaluate: ", left, right))
 			}
 		},
 	},
