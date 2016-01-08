@@ -3,7 +3,6 @@ package jsonql
 import (
 	"errors"
 	"fmt"
-	"regexp"
 	"strings"
 	"unicode"
 )
