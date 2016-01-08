@@ -33,7 +33,8 @@ func evalToken(symbolTable interface{}, token string) (interface{}, error) {
 }
 
 var SqlOperators = map[string]*Operator{
-	"OR": &Operator{
+	// Tokenizer will be responsible to put a space before and after each ')OR(', but not priORity.
+	"||": &Operator{
 		Precedence: 1,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			l, err := strconv.ParseBool(left)
@@ -47,7 +48,7 @@ var SqlOperators = map[string]*Operator{
 			return strconv.FormatBool(l || r), nil
 		},
 	},
-	"AND": &Operator{
+	"&&": &Operator{
 		Precedence: 3,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			l, err := strconv.ParseBool(left)
@@ -391,7 +392,7 @@ var SqlOperators = map[string]*Operator{
 			return "false", errors.New(fmt.Sprint("Failed to compare: ", left, right))
 		},
 	},
-	"RLIKE": &Operator{
+	"~=": &Operator{
 		Precedence: 5,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			l, err := evalToken(symbolTable, left)
@@ -410,6 +411,30 @@ var SqlOperators = map[string]*Operator{
 					return "false", err
 				}
 				return strconv.FormatBool(matches), nil
+			}
+			return "false", errors.New(fmt.Sprint("Failed to compare: ", left, right))
+
+		},
+	},
+	"!~=": &Operator{
+		Precedence: 5,
+		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
+			l, err := evalToken(symbolTable, left)
+			if err != nil {
+				return "false", err
+			}
+			r, err := evalToken(symbolTable, right)
+			if err != nil {
+				return "false", err
+			}
+			sl, foundl := l.(string)
+			sr, foundr := r.(string)
+			if foundl && foundr {
+				matches, err := regexp.MatchString(sr, sl)
+				if err != nil {
+					return "false", err
+				}
+				return strconv.FormatBool(!matches), nil
 			}
 			return "false", errors.New(fmt.Sprint("Failed to compare: ", left, right))
 

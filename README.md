@@ -1,25 +1,35 @@
 # jsonql
 SQL like JSON query library in Golang.
 
-This library enables query against JSON using SQL like WHERE clause. Currently supported operators are: (precedences from low to high, case insensitive)
+This library enables query against JSON. Currently supported operators are: (precedences from low to high, case insensitive)
 
 ```
-OR
-AND
-= != > < >= <= RLIKE
+||
+&&
+= != > < >= <= ~= !~=
 + -
 * / %
 ^
 ( )
 ```
 
-Please note I decided not to implement `LIKE` or `NOTE LIKE` operations because `RLIKE` is enough to handle the cases `LIKE` and `NOT LIKE` handle. 
+## Changes
+Previously I was hoping to make the query as similar to SQL `WHERE` clause as possible. Later I found a problem parsing the term `PRIORITY>5`. The tokenizer split it as `PRI`, `OR`, `ITY`, `>`, `5`, since `OR` was then an operator, which is terribly wrong. At that point, I thought of two choices:
+
+1. to force the query expression to contain at least one white space between tokens, thus `PRIORITY>5` should be written as `PRIORITY > 5`;
+2. to replace operators as follows:
+	* `AND` to `&&`
+	* `OR`	to `||`
+	* `RLIKE` to `~=`
+	* `NOT RLIKE` to `!~=`
+
+I adopted the second choice as the new operators I believe are still quite common to most programmers, rather than forcing to put white spaces between tokens.
 
 ## Install
 `go get -u github.com/elgs/jsonql`
 
 ## TODD
-* Implement `IS NULL` and `IS NOT NULL`
+* Implement `IS NULL` and `IS NOT NULL` (Patches welcome)
 
 ## Example
 ```go
@@ -74,10 +84,10 @@ func main() {
 	fmt.Println(parser.Query("name='elgs'"))
 	//[map[skills:[Golang Java C] name:elgs gender:m age:35]] <nil>
 
-	fmt.Println(parser.Query("name='elgs' and gender='f'"))
+	fmt.Println(parser.Query("name='elgs' && gender='f'"))
 	//[] <nil>
 
-	fmt.Println(parser.Query("age<10 or (name='enny' and gender='f')"))
+	fmt.Println(parser.Query("age<10 || (name='enny' && gender='f')"))
 	//[map[gender:f age:36 skills:[IC Electric design Verification] name:enny] map[age:1 skills:[Eating Sleeping Crawling] name:sam gender:m]] <nil>
 
 	fmt.Println(parser.Query("age<10"))
@@ -89,7 +99,7 @@ func main() {
 	fmt.Println(parser.Query("age=(2*3)^2"))
 	//[map[skills:[IC Electric design Verification] name:enny gender:f age:36]] <nil>
 	
-	fmt.Println(parser.Query("name RLIKE 'e.*'"))
+	fmt.Println(parser.Query("name ~= 'e.*'"))
 	//[map[age:35 skills:[Golang Java C] name:elgs gender:m] map[skills:[IC Electric design Verification] name:enny gender:f age:36]] <nil>
 	
 	fmt.Println(parser.Query("name='el'+'gs'"))

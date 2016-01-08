@@ -3,6 +3,7 @@ package jsonql
 import (
 	"errors"
 	"fmt"
+	"regexp"
 	"strings"
 	"unicode"
 )
@@ -153,10 +154,17 @@ func (this *Parser) ParseRPN(tokens []string) (output *Lifo, err error) {
 	return
 }
 
+func normalize(exp string) string {
+	re := regexp.MustCompile("\\s+OR")
+	fmt.Println(re.ReplaceAllLiteralString(exp, "T"))
+	return exp
+}
+
 func (this *Parser) Tokenize(exp string) (tokens []string) {
 	if !this.initialized {
 		this.Init()
 	}
+	exp = normalize(exp)
 	sq, dq := false, false
 	var tmp string
 	expRunes := []rune(exp)
@@ -165,13 +173,20 @@ func (this *Parser) Tokenize(exp string) (tokens []string) {
 		s := string(v)
 		switch {
 		case unicode.IsSpace(v):
+			//			if sq || dq {
+			//				tmp += s
+			//			} else {
+			//				if len(tmp) > 0 && !sq && !dq {
+			//					tokens = append(tokens, tmp)
+			//					tmp = ""
+			//				}
+			//			}
+
 			if sq || dq {
 				tmp += s
-			} else {
-				if len(tmp) > 0 && !sq && !dq {
-					tokens = append(tokens, tmp)
-					tmp = ""
-				}
+			} else if len(tmp) > 0 {
+				tokens = append(tokens, tmp)
+				tmp = ""
 			}
 		case s == "'":
 			tmp += s
