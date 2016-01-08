@@ -23,7 +23,7 @@ Previously I was hoping to make the query as similar to SQL `WHERE` clause as po
 	* `RLIKE` to `~=`
 	* `NOT RLIKE` to `!~=`
 
-I adopted the second choice as the new operators I believe are still quite common to most programmers, rather than forcing to put white spaces between tokens.
+I adopted the second choice as the new operators I believe are still quite intuitive to most programmers, rather than forcing to put white spaces between tokens.
 
 ## Install
 `go get -u github.com/elgs/jsonql`
