@@ -1,5 +1,5 @@
 # jsonql
-SQL like JSON query library in Golang.
+JSON query library in Golang.
 
 This library enables query against JSON. Currently supported operators are: (precedences from low to high, case insensitive)
 
