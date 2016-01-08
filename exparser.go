@@ -154,17 +154,10 @@ func (this *Parser) ParseRPN(tokens []string) (output *Lifo, err error) {
 	return
 }
 
-func normalize(exp string) string {
-	re := regexp.MustCompile("\\s+OR")
-	fmt.Println(re.ReplaceAllLiteralString(exp, "T"))
-	return exp
-}
-
 func (this *Parser) Tokenize(exp string) (tokens []string) {
 	if !this.initialized {
 		this.Init()
 	}
-	exp = normalize(exp)
 	sq, dq := false, false
 	var tmp string
 	expRunes := []rune(exp)
