@@ -34,7 +34,7 @@ func evalToken(symbolTable interface{}, token string) (interface{}, error) {
 
 var SqlOperators = map[string]*Operator{
 	// Tokenizer will be responsible to put a space before and after each ')OR(', but not priORity.
-	"||": &Operator{
+	"||": {
 		Precedence: 1,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			l, err := strconv.ParseBool(left)
@@ -48,7 +48,7 @@ var SqlOperators = map[string]*Operator{
 			return strconv.FormatBool(l || r), nil
 		},
 	},
-	"&&": &Operator{
+	"&&": {
 		Precedence: 3,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			l, err := strconv.ParseBool(left)
@@ -62,7 +62,7 @@ var SqlOperators = map[string]*Operator{
 			return strconv.FormatBool(l && r), nil
 		},
 	},
-	"=": &Operator{
+	"=": {
 		Precedence: 5,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			l, err := evalToken(symbolTable, left)
@@ -117,7 +117,7 @@ var SqlOperators = map[string]*Operator{
 			return "false", errors.New(fmt.Sprint("Failed to compare: ", left, right))
 		},
 	},
-	"!=": &Operator{
+	"!=": {
 		Precedence: 5,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			l, err := evalToken(symbolTable, left)
@@ -172,7 +172,7 @@ var SqlOperators = map[string]*Operator{
 			return "false", errors.New(fmt.Sprint("Failed to compare: ", left, right))
 		},
 	},
-	">": &Operator{
+	">": {
 		Precedence: 5,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			l, err := evalToken(symbolTable, left)
@@ -227,7 +227,7 @@ var SqlOperators = map[string]*Operator{
 			return "false", errors.New(fmt.Sprint("Failed to compare: ", left, right))
 		},
 	},
-	"<": &Operator{
+	"<": {
 		Precedence: 5,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			l, err := evalToken(symbolTable, left)
@@ -282,7 +282,7 @@ var SqlOperators = map[string]*Operator{
 			return "false", errors.New(fmt.Sprint("Failed to compare: ", left, right))
 		},
 	},
-	">=": &Operator{
+	">=": {
 		Precedence: 5,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			l, err := evalToken(symbolTable, left)
@@ -337,7 +337,7 @@ var SqlOperators = map[string]*Operator{
 			return "false", errors.New(fmt.Sprint("Failed to compare: ", left, right))
 		},
 	},
-	"<=": &Operator{
+	"<=": {
 		Precedence: 5,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			l, err := evalToken(symbolTable, left)
@@ -392,7 +392,7 @@ var SqlOperators = map[string]*Operator{
 			return "false", errors.New(fmt.Sprint("Failed to compare: ", left, right))
 		},
 	},
-	"~=": &Operator{
+	"~=": {
 		Precedence: 5,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			l, err := evalToken(symbolTable, left)
@@ -416,7 +416,7 @@ var SqlOperators = map[string]*Operator{
 
 		},
 	},
-	"!~=": &Operator{
+	"!~=": {
 		Precedence: 5,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			l, err := evalToken(symbolTable, left)
@@ -440,7 +440,7 @@ var SqlOperators = map[string]*Operator{
 
 		},
 	},
-	"+": &Operator{
+	"+": {
 		Precedence: 7,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			l, err := evalToken(symbolTable, left)
@@ -468,7 +468,7 @@ var SqlOperators = map[string]*Operator{
 			}
 		},
 	},
-	"-": &Operator{
+	"-": {
 		Precedence: 7,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			l, err := evalToken(symbolTable, left)
@@ -496,7 +496,7 @@ var SqlOperators = map[string]*Operator{
 			}
 		},
 	},
-	"*": &Operator{
+	"*": {
 		Precedence: 9,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			l, err := evalToken(symbolTable, left)
@@ -524,7 +524,7 @@ var SqlOperators = map[string]*Operator{
 			}
 		},
 	},
-	"/": &Operator{
+	"/": {
 		Precedence: 9,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			l, err := evalToken(symbolTable, left)
@@ -555,7 +555,7 @@ var SqlOperators = map[string]*Operator{
 			}
 		},
 	},
-	"%": &Operator{
+	"%": {
 		Precedence: 9,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			l, err := evalToken(symbolTable, left)
@@ -578,7 +578,7 @@ var SqlOperators = map[string]*Operator{
 			}
 		},
 	},
-	"^": &Operator{
+	"^": {
 		Precedence: 10,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			l, err := evalToken(symbolTable, left)

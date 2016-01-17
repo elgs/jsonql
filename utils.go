@@ -1,8 +1,6 @@
 // utils
 package jsonql
 
-import ()
-
 func CompareSlices(a, b []string) bool {
 	if len(a) != len(b) {
 		return false

@@ -61,7 +61,7 @@ func TestTokenizeSql(t *testing.T) {
 			t.Error("Expected:", v.ex, "actual:", tokens)
 		}
 	}
-	for _, _ = range fail {
+	for range fail {
 
 	}
 }
@@ -96,7 +96,7 @@ func TestRPN(t *testing.T) {
 			t.Error(v.in, "Expected:", v.ex, "actual:", result)
 		}
 	}
-	for _, _ = range fail {
+	for range fail {
 
 	}
 }

@@ -66,7 +66,7 @@ func TestParse(t *testing.T) {
 		//			t.Error("Expected:", v.ex, "actual:", result)
 		//		}
 	}
-	for _, _ = range fail {
+	for range fail {
 
 	}
 }

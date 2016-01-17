@@ -20,7 +20,7 @@ type Parser struct {
 }
 
 func (this *Parser) Init() {
-	for k, _ := range this.Operators {
+	for k := range this.Operators {
 		if len(k) > this.maxOpLen {
 			this.maxOpLen = len(k)
 		}
