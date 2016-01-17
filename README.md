@@ -1,7 +1,7 @@
 # jsonql
-JSON query library in Golang.
+JSON query expression library in Golang.
 
-This library enables query against JSON. Currently supported operators are: (precedences from low to high, case insensitive)
+This library enables query against JSON. Currently supported operators are: (precedences from low to high)
 
 ```
 ||
