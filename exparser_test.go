@@ -1,4 +1,3 @@
-// exparser_test
 package jsonql
 
 import (

@@ -1,4 +1,3 @@
-// lifo_test
 package jsonql
 
 import (

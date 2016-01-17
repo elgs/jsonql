@@ -1,4 +1,3 @@
-// utils
 package jsonql
 
 func CompareSlices(a, b []string) bool {

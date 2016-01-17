@@ -1,4 +1,3 @@
-// mysql_operators
 package jsonql
 
 import (

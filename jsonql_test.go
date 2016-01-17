@@ -1,4 +1,3 @@
-// jsonql_test
 package jsonql
 
 import (

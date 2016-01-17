@@ -1,4 +1,3 @@
-// utils_test
 package jsonql
 
 import (

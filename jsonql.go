@@ -1,4 +1,3 @@
-// jsonql
 package jsonql
 
 import (
