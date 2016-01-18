@@ -572,9 +572,8 @@ var sqlOperators = map[string]*Operator{
 			}
 			if okil && okir { //ii
 				return fmt.Sprint(il % ir), nil
-			} else { //else
-				return "", errors.New(fmt.Sprint("Failed to evaluate: ", left, right))
 			}
+			return "", errors.New(fmt.Sprint("Failed to evaluate: ", left, right))
 		},
 	},
 	"^": {
