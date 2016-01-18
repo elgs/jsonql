@@ -27,7 +27,7 @@ func NewQuery(jsonObject interface{}) *JSONQL {
 }
 
 // Query - queries against the JSON using the conditions specified in the where stirng.
-func (this *JSONQL) Query(where string) (interface{}, error) {
+func (thisJSONQL *JSONQL) Query(where string) (interface{}, error) {
 	parser := &Parser{
 		Operators: sqlOperators,
 	}
@@ -36,12 +36,12 @@ func (this *JSONQL) Query(where string) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	switch v := this.Data.(type) {
+	switch v := thisJSONQL.Data.(type) {
 	case []interface{}:
 		ret := []interface{}{}
 		for _, obj := range v {
 			parser.SymbolTable = obj
-			r, err := this.processObj(parser, *rpn)
+			r, err := thisJSONQL.processObj(parser, *rpn)
 			if err != nil {
 				return nil, err
 			}
@@ -52,7 +52,7 @@ func (this *JSONQL) Query(where string) (interface{}, error) {
 		return ret, nil
 	case map[string]interface{}:
 		parser.SymbolTable = v
-		r, err := this.processObj(parser, *rpn)
+		r, err := thisJSONQL.processObj(parser, *rpn)
 		if err != nil {
 			return nil, err
 		}
@@ -65,7 +65,7 @@ func (this *JSONQL) Query(where string) (interface{}, error) {
 	}
 }
 
-func (this *JSONQL) processObj(parser *Parser, rpn Lifo) (bool, error) {
+func (thisJSONQL *JSONQL) processObj(parser *Parser, rpn Lifo) (bool, error) {
 	result, err := parser.Evaluate(&rpn, true)
 	if err != nil {
 		fmt.Println(err)

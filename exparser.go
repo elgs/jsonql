@@ -22,34 +22,34 @@ type Parser struct {
 }
 
 // Init - init inspects the Operators and learns how long the longest operator string is
-func (this *Parser) Init() {
-	for k := range this.Operators {
-		if len(k) > this.maxOpLen {
-			this.maxOpLen = len(k)
+func (thisParser *Parser) Init() {
+	for k := range thisParser.Operators {
+		if len(k) > thisParser.maxOpLen {
+			thisParser.maxOpLen = len(k)
 		}
 	}
 }
 
 // Calculate - gets the final result of the expression
-func (this *Parser) Calculate(expression string) (string, error) {
-	tokens := this.Tokenize(expression)
+func (thisParser *Parser) Calculate(expression string) (string, error) {
+	tokens := thisParser.Tokenize(expression)
 	//fmt.Println(expression, tokens)
-	rpn, err := this.ParseRPN(tokens)
+	rpn, err := thisParser.ParseRPN(tokens)
 	if err != nil {
 		return "", err
 	}
-	return this.Evaluate(rpn, true)
+	return thisParser.Evaluate(rpn, true)
 }
 
 // Evaluate - evaluates the token stack until only one (as the final result) is left.
-func (this *Parser) Evaluate(ts *Lifo, postfix bool) (string, error) {
+func (thisParser *Parser) Evaluate(ts *Lifo, postfix bool) (string, error) {
 	newTs := &Lifo{}
 	usefulWork := false
 	for ti := ts.Pop(); ti != nil; ti = ts.Pop() {
 		t := ti.(string)
 		//		fmt.Println("t:", t)
 		switch {
-		case this.Operators[t] != nil:
+		case thisParser.Operators[t] != nil:
 			// operators
 			usefulWork = true
 			if postfix {
@@ -63,7 +63,7 @@ func (this *Parser) Evaluate(ts *Lifo, postfix bool) (string, error) {
 				if right != nil {
 					r = right.(string)
 				}
-				result, err := this.Operators[t].Eval(this.SymbolTable, l, r)
+				result, err := thisParser.Operators[t].Eval(thisParser.SymbolTable, l, r)
 				newTs.Push(result)
 				if err != nil {
 					return "", errors.New(fmt.Sprint("Failed to evaluate:", l, t, r))
@@ -79,7 +79,7 @@ func (this *Parser) Evaluate(ts *Lifo, postfix bool) (string, error) {
 				if right != nil {
 					r = right.(string)
 				}
-				result, err := this.Operators[t].Eval(this.SymbolTable, l, r)
+				result, err := thisParser.Operators[t].Eval(thisParser.SymbolTable, l, r)
 				newTs.Push(result)
 				if err != nil {
 					return "", errors.New(fmt.Sprint("Failed to evaluate:", l, t, r))
@@ -97,13 +97,13 @@ func (this *Parser) Evaluate(ts *Lifo, postfix bool) (string, error) {
 	if newTs.Len() == 1 {
 		return newTs.Pop().(string), nil
 	}
-	return this.Evaluate(newTs, !postfix)
+	return thisParser.Evaluate(newTs, !postfix)
 }
 
 // false o1 in first, true o2 out first
-func (this *Parser) shunt(o1, o2 string) (bool, error) {
-	op1 := this.Operators[o1]
-	op2 := this.Operators[o2]
+func (thisParser *Parser) shunt(o1, o2 string) (bool, error) {
+	op1 := thisParser.Operators[o1]
+	op2 := thisParser.Operators[o2]
 	if op1 == nil || op2 == nil {
 		return false, errors.New(fmt.Sprint("Invalid operators:", o1, o2))
 	}
@@ -114,19 +114,19 @@ func (this *Parser) shunt(o1, o2 string) (bool, error) {
 }
 
 // ParseRPN - parses the RPN tokens
-func (this *Parser) ParseRPN(tokens []string) (output *Lifo, err error) {
+func (thisParser *Parser) ParseRPN(tokens []string) (output *Lifo, err error) {
 	opStack := &Lifo{}
 	outputQueue := []string{}
 	for _, token := range tokens {
 		switch {
-		case this.Operators[token] != nil:
+		case thisParser.Operators[token] != nil:
 			// operator
 			for o2 := opStack.Peep(); o2 != nil; o2 = opStack.Peep() {
 				stackToken := o2.(string)
-				if this.Operators[stackToken] == nil {
+				if thisParser.Operators[stackToken] == nil {
 					break
 				}
-				o2First, err := this.shunt(token, stackToken)
+				o2First, err := thisParser.shunt(token, stackToken)
 				if err != nil {
 					return output, err
 				}
@@ -159,9 +159,9 @@ func (this *Parser) ParseRPN(tokens []string) (output *Lifo, err error) {
 }
 
 // Tokenize - splits the expression into tokens.
-func (this *Parser) Tokenize(exp string) (tokens []string) {
-	if !this.initialized {
-		this.Init()
+func (thisParser *Parser) Tokenize(exp string) (tokens []string) {
+	if !thisParser.initialized {
+		thisParser.Init()
 	}
 	sq, dq := false, false
 	var tmp string
@@ -207,7 +207,7 @@ func (this *Parser) Tokenize(exp string) (tokens []string) {
 				if len(tokens) > 0 {
 					lastToken = tokens[len(tokens)-1]
 				}
-				if (s == "+" || s == "-") && (len(tokens) == 0 || lastToken == "(" || this.Operators[lastToken] != nil) {
+				if (s == "+" || s == "-") && (len(tokens) == 0 || lastToken == "(" || thisParser.Operators[lastToken] != nil) {
 					// sign
 					tmp += s
 				} else {
@@ -222,10 +222,10 @@ func (this *Parser) Tokenize(exp string) (tokens []string) {
 				// until the max length of operators(n), check if next 1..n runes are operator, greedily
 				opCandidateTmp := ""
 				opCandidate := ""
-				for j := 0; j < this.maxOpLen && i < len(expRunes)-j-1; j++ {
+				for j := 0; j < thisParser.maxOpLen && i < len(expRunes)-j-1; j++ {
 					next := string(expRunes[i+j])
 					opCandidateTmp += strings.ToUpper(next)
-					if this.Operators[opCandidateTmp] != nil {
+					if thisParser.Operators[opCandidateTmp] != nil {
 						opCandidate = opCandidateTmp
 					}
 				}
