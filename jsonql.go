@@ -2,7 +2,6 @@ package jsonql
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"strconv"
 )
@@ -22,7 +21,7 @@ func NewStringQuery(jsonString string) (*JSONQL, error) {
 	return &JSONQL{*data}, nil
 }
 
-// NewStringQuery - creates a new &JSONQL from raw JSON string
+// NewQuery - creates a new &JSONQL from raw JSON string
 func NewQuery(jsonObject interface{}) *JSONQL {
 	return &JSONQL{jsonObject}
 }
@@ -62,7 +61,7 @@ func (this *JSONQL) Query(where string) (interface{}, error) {
 		}
 		return nil, nil
 	default:
-		return nil, errors.New(fmt.Sprintf("Failed to parse input data."))
+		return nil, fmt.Errorf("Failed to parse input data.")
 	}
 }
 

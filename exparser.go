@@ -13,7 +13,7 @@ type Operator struct {
 	Eval       func(symbolTable interface{}, left string, right string) (string, error)
 }
 
-// Parser
+// Parser - the main struct that contains operators, symbol table.
 type Parser struct {
 	Operators   map[string]*Operator
 	SymbolTable interface{}
@@ -96,9 +96,8 @@ func (this *Parser) Evaluate(ts *Lifo, postfix bool) (string, error) {
 	}
 	if newTs.Len() == 1 {
 		return newTs.Pop().(string), nil
-	} else {
-		return this.Evaluate(newTs, !postfix)
 	}
+	return this.Evaluate(newTs, !postfix)
 }
 
 // false o1 in first, true o2 out first
