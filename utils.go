@@ -1,5 +1,6 @@
 package jsonql
 
+// CompareSlices - compares to slices, return false if they are not equal, true if they are.
 func CompareSlices(a, b []string) bool {
 	if len(a) != len(b) {
 		return false
@@ -12,6 +13,7 @@ func CompareSlices(a, b []string) bool {
 	return true
 }
 
+// ReverseString - reverses a string.
 func ReverseString(input string) string {
 	r := []rune(input)
 	for i := 0; i < len(r)/2; i++ {

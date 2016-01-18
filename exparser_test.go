@@ -24,7 +24,7 @@ func TestTokenize(t *testing.T) {
 		ex []string
 	}{}
 	parser := &Parser{
-		Operators: SqlOperators,
+		Operators: sqlOperators,
 	}
 	for _, v := range pass {
 		tokens := parser.Tokenize(v.in)
@@ -52,7 +52,7 @@ func TestTokenizeSql(t *testing.T) {
 		ex []string
 	}{}
 	parser := &Parser{
-		Operators: SqlOperators,
+		Operators: sqlOperators,
 	}
 	for _, v := range pass {
 		tokens := parser.Tokenize(v.in)
@@ -83,7 +83,7 @@ func TestRPN(t *testing.T) {
 		ex []string
 	}{}
 	parser := &Parser{
-		Operators: SqlOperators,
+		Operators: sqlOperators,
 	}
 
 	for _, v := range pass {

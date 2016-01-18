@@ -31,7 +31,7 @@ func evalToken(symbolTable interface{}, token string) (interface{}, error) {
 	return jq.Query(token)
 }
 
-var SqlOperators = map[string]*Operator{
+var sqlOperators = map[string]*Operator{
 	// Tokenizer will be responsible to put a space before and after each ')OR(', but not priORity.
 	"||": {
 		Precedence: 1,

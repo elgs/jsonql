@@ -7,11 +7,13 @@ import (
 	"unicode"
 )
 
+// Operator - encapsulates the Precedence and behavior logic of the operators.
 type Operator struct {
 	Precedence int
 	Eval       func(symbolTable interface{}, left string, right string) (string, error)
 }
 
+// Parser
 type Parser struct {
 	Operators   map[string]*Operator
 	SymbolTable interface{}
@@ -19,6 +21,7 @@ type Parser struct {
 	initialized bool
 }
 
+// Init - init inspects the Operators and learns how long the longest operator string is
 func (this *Parser) Init() {
 	for k := range this.Operators {
 		if len(k) > this.maxOpLen {
@@ -27,6 +30,7 @@ func (this *Parser) Init() {
 	}
 }
 
+// Calculate - gets the final result of the expression
 func (this *Parser) Calculate(expression string) (string, error) {
 	tokens := this.Tokenize(expression)
 	//fmt.Println(expression, tokens)
@@ -37,6 +41,7 @@ func (this *Parser) Calculate(expression string) (string, error) {
 	return this.Evaluate(rpn, true)
 }
 
+// Evaluate - evaluates the token stack until only one (as the final result) is left.
 func (this *Parser) Evaluate(ts *Lifo, postfix bool) (string, error) {
 	newTs := &Lifo{}
 	usefulWork := false
@@ -109,6 +114,7 @@ func (this *Parser) shunt(o1, o2 string) (bool, error) {
 	return false, nil
 }
 
+// ParseRPN - parses the RPN tokens
 func (this *Parser) ParseRPN(tokens []string) (output *Lifo, err error) {
 	opStack := &Lifo{}
 	outputQueue := []string{}
@@ -153,6 +159,7 @@ func (this *Parser) ParseRPN(tokens []string) (output *Lifo, err error) {
 	return
 }
 
+// Tokenize - splits the expression into tokens.
 func (this *Parser) Tokenize(exp string) (tokens []string) {
 	if !this.initialized {
 		this.Init()
@@ -165,15 +172,6 @@ func (this *Parser) Tokenize(exp string) (tokens []string) {
 		s := string(v)
 		switch {
 		case unicode.IsSpace(v):
-			//			if sq || dq {
-			//				tmp += s
-			//			} else {
-			//				if len(tmp) > 0 && !sq && !dq {
-			//					tokens = append(tokens, tmp)
-			//					tmp = ""
-			//				}
-			//			}
-
 			if sq || dq {
 				tmp += s
 			} else if len(tmp) > 0 {
