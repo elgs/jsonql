@@ -73,44 +73,47 @@ var sqlOperators = map[string]*Operator{
 			if err != nil {
 				return "false", err
 			}
-			if sr, oksr := r.(string); oksr {
+
+			switch vr := r.(type) {
+			case string:
 				if sl, oksl := l.(string); oksl {
-					return strconv.FormatBool(sl == sr), nil
+					return strconv.FormatBool(sl == vr), nil
+				} else {
+					return "false", nil
 				}
-			}
-			if ir, okir := r.(int64); okir {
+			case int64:
 				switch vl := l.(type) {
 				case string:
 					il, err := strconv.ParseInt(vl, 10, 0)
 					if err != nil {
 						return "false", nil
 					}
-					return strconv.FormatBool(il == ir), nil
+					return strconv.FormatBool(il == vr), nil
 				case int64:
-					return strconv.FormatBool(vl == ir), nil
+					return strconv.FormatBool(vl == vr), nil
 				case float64:
-					return strconv.FormatBool(vl == float64(ir)), nil
+					return strconv.FormatBool(vl == float64(vr)), nil
 				default:
 					return "false", nil
 				}
-			}
-			if fr, okfr := r.(float64); okfr {
+			case float64:
 				switch vl := l.(type) {
 				case string:
 					fl, err := strconv.ParseFloat(vl, 64)
 					if err != nil {
 						return "false", nil
 					}
-					return strconv.FormatBool(fl == fr), nil
+					return strconv.FormatBool(fl == vr), nil
 				case int64:
-					return strconv.FormatBool(float64(vl) == fr), nil
+					return strconv.FormatBool(float64(vl) == vr), nil
 				case float64:
-					return strconv.FormatBool(vl == fr), nil
+					return strconv.FormatBool(vl == vr), nil
 				default:
 					return "false", nil
 				}
+			default:
+				return "false", errors.New(fmt.Sprint("Failed to compare: ", left, right))
 			}
-			return "false", errors.New(fmt.Sprint("Failed to compare: ", left, right))
 		},
 	},
 	"!=": {
@@ -124,15 +127,12 @@ var sqlOperators = map[string]*Operator{
 			if err != nil {
 				return "false", err
 			}
-			sr, oksr := r.(string)
-			if oksr {
-				sl, oksl := l.(string)
-				if oksl {
+			if sr, oksr := r.(string); oksr {
+				if sl, oksl := l.(string); oksl {
 					return strconv.FormatBool(sl != sr), nil
 				}
 			}
-			ir, okir := r.(int64)
-			if okir {
+			if ir, okir := r.(int64); okir {
 				switch vl := l.(type) {
 				case string:
 					il, err := strconv.ParseInt(vl, 10, 0)
@@ -148,8 +148,7 @@ var sqlOperators = map[string]*Operator{
 					return "false", nil
 				}
 			}
-			fr, okfr := r.(float64)
-			if okfr {
+			if fr, okfr := r.(float64); okfr {
 				switch vl := l.(type) {
 				case string:
 					fl, err := strconv.ParseFloat(vl, 64)
@@ -179,15 +178,13 @@ var sqlOperators = map[string]*Operator{
 			if err != nil {
 				return "false", err
 			}
-			sr, oksr := r.(string)
-			if oksr {
+			if sr, oksr := r.(string); oksr {
 				sl, oksl := l.(string)
 				if oksl {
 					return strconv.FormatBool(sl > sr), nil
 				}
 			}
-			ir, okir := r.(int64)
-			if okir {
+			if ir, okir := r.(int64); okir {
 				switch vl := l.(type) {
 				case string:
 					il, err := strconv.ParseInt(vl, 10, 0)
@@ -203,8 +200,7 @@ var sqlOperators = map[string]*Operator{
 					return "false", nil
 				}
 			}
-			fr, okfr := r.(float64)
-			if okfr {
+			if fr, okfr := r.(float64); okfr {
 				switch vl := l.(type) {
 				case string:
 					fl, err := strconv.ParseFloat(vl, 64)
@@ -234,15 +230,13 @@ var sqlOperators = map[string]*Operator{
 			if err != nil {
 				return "false", err
 			}
-			sr, oksr := r.(string)
-			if oksr {
+			if sr, oksr := r.(string); oksr {
 				sl, oksl := l.(string)
 				if oksl {
 					return strconv.FormatBool(sl < sr), nil
 				}
 			}
-			ir, okir := r.(int64)
-			if okir {
+			if ir, okir := r.(int64); okir {
 				switch vl := l.(type) {
 				case string:
 					il, err := strconv.ParseInt(vl, 10, 0)
@@ -258,8 +252,7 @@ var sqlOperators = map[string]*Operator{
 					return "false", nil
 				}
 			}
-			fr, okfr := r.(float64)
-			if okfr {
+			if fr, okfr := r.(float64); okfr {
 				switch vl := l.(type) {
 				case string:
 					fl, err := strconv.ParseFloat(vl, 64)
@@ -289,15 +282,13 @@ var sqlOperators = map[string]*Operator{
 			if err != nil {
 				return "false", err
 			}
-			sr, oksr := r.(string)
-			if oksr {
+			if sr, oksr := r.(string); oksr {
 				sl, oksl := l.(string)
 				if oksl {
 					return strconv.FormatBool(sl >= sr), nil
 				}
 			}
-			ir, okir := r.(int64)
-			if okir {
+			if ir, okir := r.(int64); okir {
 				switch vl := l.(type) {
 				case string:
 					il, err := strconv.ParseInt(vl, 10, 0)
@@ -313,8 +304,7 @@ var sqlOperators = map[string]*Operator{
 					return "false", nil
 				}
 			}
-			fr, okfr := r.(float64)
-			if okfr {
+			if fr, okfr := r.(float64); okfr {
 				switch vl := l.(type) {
 				case string:
 					fl, err := strconv.ParseFloat(vl, 64)
@@ -344,15 +334,13 @@ var sqlOperators = map[string]*Operator{
 			if err != nil {
 				return "false", err
 			}
-			sr, oksr := r.(string)
-			if oksr {
+			if sr, oksr := r.(string); oksr {
 				sl, oksl := l.(string)
 				if oksl {
 					return strconv.FormatBool(sl <= sr), nil
 				}
 			}
-			ir, okir := r.(int64)
-			if okir {
+			if ir, okir := r.(int64); okir {
 				switch vl := l.(type) {
 				case string:
 					il, err := strconv.ParseInt(vl, 10, 0)
@@ -368,8 +356,7 @@ var sqlOperators = map[string]*Operator{
 					return "false", nil
 				}
 			}
-			fr, okfr := r.(float64)
-			if okfr {
+			if fr, okfr := r.(float64); okfr {
 				switch vl := l.(type) {
 				case string:
 					fl, err := strconv.ParseFloat(vl, 64)
