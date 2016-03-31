@@ -66,7 +66,7 @@ func (thisParser *Parser) Evaluate(ts *Lifo, postfix bool) (string, error) {
 				result, err := thisParser.Operators[t].Eval(thisParser.SymbolTable, l, r)
 				newTs.Push(result)
 				if err != nil {
-					return "", errors.New(fmt.Sprint("Failed to evaluate:", l, t, r))
+					return "", errors.New(fmt.Sprint("Failed to evaluate:", l, t, r) + " " + err.Error())
 				}
 			} else {
 				right := ts.Pop()
@@ -82,7 +82,7 @@ func (thisParser *Parser) Evaluate(ts *Lifo, postfix bool) (string, error) {
 				result, err := thisParser.Operators[t].Eval(thisParser.SymbolTable, l, r)
 				newTs.Push(result)
 				if err != nil {
-					return "", errors.New(fmt.Sprint("Failed to evaluate:", l, t, r))
+					return "", errors.New(fmt.Sprint("Failed to evaluate:", l, t, r) + " " + err.Error())
 				}
 			}
 		default:

@@ -3,11 +3,12 @@ package jsonql
 import (
 	"errors"
 	"fmt"
-	"github.com/elgs/gojq"
 	"math"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/elgs/gojq"
 )
 
 func evalToken(symbolTable interface{}, token string) (interface{}, error) {
@@ -72,15 +73,12 @@ var sqlOperators = map[string]*Operator{
 			if err != nil {
 				return "false", err
 			}
-			sr, oksr := r.(string)
-			if oksr {
-				sl, oksl := l.(string)
-				if oksl {
+			if sr, oksr := r.(string); oksr {
+				if sl, oksl := l.(string); oksl {
 					return strconv.FormatBool(sl == sr), nil
 				}
 			}
-			ir, okir := r.(int64)
-			if okir {
+			if ir, okir := r.(int64); okir {
 				switch vl := l.(type) {
 				case string:
 					il, err := strconv.ParseInt(vl, 10, 0)
@@ -96,8 +94,7 @@ var sqlOperators = map[string]*Operator{
 					return "false", nil
 				}
 			}
-			fr, okfr := r.(float64)
-			if okfr {
+			if fr, okfr := r.(float64); okfr {
 				switch vl := l.(type) {
 				case string:
 					fl, err := strconv.ParseFloat(vl, 64)
