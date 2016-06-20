@@ -21,7 +21,7 @@ func NewStringQuery(jsonString string) (*JSONQL, error) {
 	return &JSONQL{*data}, nil
 }
 
-// NewQuery - creates a new &JSONQL from raw JSON string
+// NewQuery - creates a new &JSONQL from an array of interface{} or a map of [string]interface{}
 func NewQuery(jsonObject interface{}) *JSONQL {
 	return &JSONQL{jsonObject}
 }
