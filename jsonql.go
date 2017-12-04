@@ -68,7 +68,6 @@ func (thisJSONQL *JSONQL) Query(where string) (interface{}, error) {
 func (thisJSONQL *JSONQL) processObj(parser *Parser, rpn Lifo) (bool, error) {
 	result, err := parser.Evaluate(&rpn, true)
 	if err != nil {
-		fmt.Println(err)
 		return false, nil
 	}
 	return strconv.ParseBool(result)
