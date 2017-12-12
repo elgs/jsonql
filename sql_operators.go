@@ -12,13 +12,13 @@ import (
 )
 
 func evalToken(symbolTable interface{}, token string) (interface{}, error) {
-	if token == "true" || token == "false" {
+	if token == "true" || token == "false" || token == "defined" || token == "null" {
 		return token, nil
 	}
 	if (strings.HasPrefix(token, "'") && strings.HasSuffix(token, "'")) ||
 		(strings.HasPrefix(token, "\"") && strings.HasSuffix(token, "\"")) {
 		// string
-		return token[1 : len(token)-1], nil
+		return token[1: len(token)-1], nil
 	}
 	intToken, err := strconv.ParseInt(token, 10, 0)
 	if err == nil {
@@ -60,6 +60,54 @@ var sqlOperators = map[string]*Operator{
 				return "false", err
 			}
 			return strconv.FormatBool(l && r), nil
+		},
+	},
+	"is": {
+		Precedence: 5,
+		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
+			// only support "null" and "defined" here
+			if right != "null" && right != "defined" && left != "null" && left != "defined" {
+				return "false", errors.New("Unsupported evaluation [ " + left + " is " + right + " ]")
+			}
+			l, lUndefined := evalToken(symbolTable, left)
+			r, rUndefined := evalToken(symbolTable, right)
+
+			// if either side is not defined, we don't have a match
+			if lUndefined != nil || rUndefined != nil {
+				return "false", nil
+			}
+			// matching on null?
+			if right == "null" && l != nil {
+				return "false", nil
+			}
+			if left == "null" && r != nil {
+				return "false", nil
+			}
+			// otherwise
+			return "true", nil
+		},
+	},
+	"isnt": {
+		Precedence: 5,
+		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
+			// only support "null" and "defined" here
+			if right != "null" && right != "defined" && left != "null" && left != "defined" {
+				return "false", errors.New("Unsupported evaluation [ " + left + " isnt " + right + " ]")
+			}
+			l, lUndefined := evalToken(symbolTable, left)
+			r, rUndefined := evalToken(symbolTable, right)
+
+			// if either side is checking for "defined" and we don't have a nil on the other, we don't have a match
+			if (left == "defined" && rUndefined != nil ) ||
+				(right == "defined" && lUndefined != nil ) ||
+			// truly null
+				(left == "null" && r != nil && rUndefined == nil) ||
+				(right == "null" && l != nil && lUndefined == nil) {
+				return "true", nil
+			}
+
+			// otherwise
+			return "false", nil
 		},
 	},
 	"=": {
