@@ -18,7 +18,7 @@ func evalToken(symbolTable interface{}, token string) (interface{}, error) {
 	if (strings.HasPrefix(token, "'") && strings.HasSuffix(token, "'")) ||
 		(strings.HasPrefix(token, "\"") && strings.HasSuffix(token, "\"")) {
 		// string
-		return token[1: len(token)-1], nil
+		return token[1 : len(token)-1], nil
 	}
 	intToken, err := strconv.ParseInt(token, 10, 0)
 	if err == nil {
@@ -87,20 +87,20 @@ var sqlOperators = map[string]*Operator{
 			return "true", nil
 		},
 	},
-	"isnt": {
+	"isnot": {
 		Precedence: 5,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
 			// only support "null" and "defined" here
 			if right != "null" && right != "defined" && left != "null" && left != "defined" {
-				return "false", errors.New("Unsupported evaluation [ " + left + " isnt " + right + " ]")
+				return "false", errors.New("Unsupported evaluation [ " + left + " isnot " + right + " ]")
 			}
 			l, lUndefined := evalToken(symbolTable, left)
 			r, rUndefined := evalToken(symbolTable, right)
 
 			// if either side is checking for "defined" and we don't have a nil on the other, we don't have a match
-			if (left == "defined" && rUndefined != nil ) ||
-				(right == "defined" && lUndefined != nil ) ||
-			// truly null
+			if (left == "defined" && rUndefined != nil) ||
+				(right == "defined" && lUndefined != nil) ||
+				// truly null
 				(left == "null" && r != nil && rUndefined == nil) ||
 				(right == "null" && l != nil && lUndefined == nil) {
 				return "true", nil
