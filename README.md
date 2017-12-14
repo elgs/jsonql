@@ -51,7 +51,7 @@ var jsonString = `
     "name": "elgs",
     "gender": "m",
     "age": 35,
-    // "skills": [
+    "skills": [
       "Golang",
       "Java",
       "C"
