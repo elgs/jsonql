@@ -71,8 +71,8 @@ var jsonString = `
   {
     "name": "sam",
     "gender": "m",
-	"age": 1,
-	"hobby": "dancing",
+    "age": 1,
+    "hobby": "dancing",
     "skills": [
       "Eating",
       "Sleeping",
