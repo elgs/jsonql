@@ -139,6 +139,8 @@ var sqlOperators = map[string]*Operator{
 					return strconv.FormatBool(il == vr), nil
 				case int64:
 					return strconv.FormatBool(vl == vr), nil
+				case int:
+					return strconv.FormatBool(vl == int(vr)), nil
 				case float64:
 					return strconv.FormatBool(vl == float64(vr)), nil
 				default:
@@ -154,6 +156,8 @@ var sqlOperators = map[string]*Operator{
 					return strconv.FormatBool(fl == vr), nil
 				case int64:
 					return strconv.FormatBool(float64(vl) == vr), nil
+				case int:
+					return strconv.FormatBool(vl == int(vr)), nil
 				case float64:
 					return strconv.FormatBool(vl == vr), nil
 				default:
@@ -190,6 +194,8 @@ var sqlOperators = map[string]*Operator{
 					return strconv.FormatBool(il != ir), nil
 				case int64:
 					return strconv.FormatBool(vl != ir), nil
+				case int:
+					return strconv.FormatBool(vl != int(ir)), nil
 				case float64:
 					return strconv.FormatBool(vl != float64(ir)), nil
 				default:
@@ -206,6 +212,8 @@ var sqlOperators = map[string]*Operator{
 					return strconv.FormatBool(fl != fr), nil
 				case int64:
 					return strconv.FormatBool(float64(vl) != fr), nil
+				case int:
+					return strconv.FormatBool(vl != int(vl)), nil
 				case float64:
 					return strconv.FormatBool(vl != fr), nil
 				default:
@@ -242,6 +250,8 @@ var sqlOperators = map[string]*Operator{
 					return strconv.FormatBool(il > ir), nil
 				case int64:
 					return strconv.FormatBool(vl > ir), nil
+				case int:
+					return strconv.FormatBool(vl > int(ir)), nil
 				case float64:
 					return strconv.FormatBool(vl > float64(ir)), nil
 				default:
@@ -258,6 +268,8 @@ var sqlOperators = map[string]*Operator{
 					return strconv.FormatBool(fl > fr), nil
 				case int64:
 					return strconv.FormatBool(float64(vl) > fr), nil
+				case int:
+					return strconv.FormatBool(vl > int(fr)), nil
 				case float64:
 					return strconv.FormatBool(vl > fr), nil
 				default:
@@ -294,6 +306,8 @@ var sqlOperators = map[string]*Operator{
 					return strconv.FormatBool(il < ir), nil
 				case int64:
 					return strconv.FormatBool(vl < ir), nil
+				case int:
+					return strconv.FormatBool(vl < int(ir)), nil
 				case float64:
 					return strconv.FormatBool(vl < float64(ir)), nil
 				default:
@@ -310,6 +324,8 @@ var sqlOperators = map[string]*Operator{
 					return strconv.FormatBool(fl < fr), nil
 				case int64:
 					return strconv.FormatBool(float64(vl) < fr), nil
+				case int:
+					return strconv.FormatBool(vl < int(fr)), nil
 				case float64:
 					return strconv.FormatBool(vl < fr), nil
 				default:
@@ -346,6 +362,8 @@ var sqlOperators = map[string]*Operator{
 					return strconv.FormatBool(il >= ir), nil
 				case int64:
 					return strconv.FormatBool(vl >= ir), nil
+				case int:
+					return strconv.FormatBool(vl >= int(ir)), nil
 				case float64:
 					return strconv.FormatBool(vl >= float64(ir)), nil
 				default:
@@ -359,11 +377,13 @@ var sqlOperators = map[string]*Operator{
 					if err != nil {
 						return "false", nil
 					}
-					return strconv.FormatBool(fl <= fr), nil
+					return strconv.FormatBool(fl >= fr), nil
 				case int64:
-					return strconv.FormatBool(float64(vl) <= fr), nil
+					return strconv.FormatBool(float64(vl) >= fr), nil
+				case int:
+					return strconv.FormatBool(vl >= int(fr)), nil
 				case float64:
-					return strconv.FormatBool(vl <= fr), nil
+					return strconv.FormatBool(vl >= fr), nil
 				default:
 					return "false", nil
 				}
@@ -398,6 +418,8 @@ var sqlOperators = map[string]*Operator{
 					return strconv.FormatBool(il <= ir), nil
 				case int64:
 					return strconv.FormatBool(vl <= ir), nil
+				case int:
+					return strconv.FormatBool(vl <= int(ir)), nil
 				case float64:
 					return strconv.FormatBool(vl <= float64(ir)), nil
 				default:
@@ -414,6 +436,8 @@ var sqlOperators = map[string]*Operator{
 					return strconv.FormatBool(fl <= fr), nil
 				case int64:
 					return strconv.FormatBool(float64(vl) <= fr), nil
+				case int:
+					return strconv.FormatBool(vl <= int(fr)), nil
 				case float64:
 					return strconv.FormatBool(vl <= fr), nil
 				default:
