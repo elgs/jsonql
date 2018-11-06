@@ -121,11 +121,18 @@ var sqlOperators = map[string]*Operator{
 			if err != nil {
 				return "false", err
 			}
-
+			// fmt.Println(reflect.TypeOf(l).String())
+			// fmt.Println(reflect.TypeOf(r).String())
 			switch vr := r.(type) {
 			case string:
 				if sl, oksl := l.(string); oksl {
 					return strconv.FormatBool(sl == vr), nil
+				} else if bl, okbl := l.(bool); okbl {
+					br, err := strconv.ParseBool(vr)
+					if err != nil {
+						return "false", nil
+					}
+					return strconv.FormatBool(bl == br), nil
 				} else {
 					return "false", nil
 				}
@@ -178,6 +185,12 @@ var sqlOperators = map[string]*Operator{
 			if sr, oksr := r.(string); oksr {
 				if sl, oksl := l.(string); oksl {
 					return strconv.FormatBool(sl != sr), nil
+				} else if bl, okbl := l.(bool); okbl {
+					br, err := strconv.ParseBool(sr)
+					if err != nil {
+						return "false", nil
+					}
+					return strconv.FormatBool(bl != br), nil
 				}
 			}
 			if ir, okir := r.(int64); okir {
