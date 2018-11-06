@@ -195,6 +195,8 @@ var sqlOperators = map[string]*Operator{
 						return "false", nil
 					}
 					return strconv.FormatBool(bl != br), nil
+				} else {
+					return "false", nil
 				}
 			}
 			if ir, okir := r.(int64); okir {
