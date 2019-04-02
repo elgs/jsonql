@@ -62,6 +62,81 @@ var sqlOperators = map[string]*Operator{
 			return strconv.FormatBool(l && r), nil
 		},
 	},
+	"contains": {
+		Precedence: 6,
+		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
+
+			l, lUndefined := evalToken(symbolTable, left)
+			if lUndefined != nil {
+				return "false", nil
+			}
+
+			switch l.(type) {
+			case []interface{}:
+				jsn, _ := l.([]interface{})
+				for _, j := range jsn {
+					if s, ok := j.(string); ok {
+						if s == right {
+							return "true", nil
+						}
+					}
+
+				}
+				return "false", nil
+			case interface{}:
+				str, ok := l.(string)
+				if !ok {
+					return "false", nil
+				}
+				contains := strings.Contains(str, right)
+				if contains {
+					return "true", nil
+				}
+				return "false", nil
+
+			default:
+				return "false", nil
+			}
+
+		},
+	},
+	"in": {
+		Precedence: 6,
+		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
+			r, rUndefined := evalToken(symbolTable, right)
+			if rUndefined != nil {
+				return "false", nil
+			}
+
+			switch r.(type) {
+			case []interface{}:
+				jsn, _ := r.([]interface{})
+				for _, j := range jsn {
+					if s, ok := j.(string); ok {
+						if s == left {
+							return "true", nil
+						}
+					}
+
+				}
+				return "false", nil
+			case interface{}:
+				str, ok := r.(string)
+				if !ok {
+					return "false", nil
+				}
+				contains := strings.Contains(str, left)
+				if contains {
+					return "true", nil
+				}
+				return "false", nil
+
+			default:
+				return "false", nil
+			}
+
+		},
+	},
 	"is": {
 		Precedence: 5,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
