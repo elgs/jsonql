@@ -65,22 +65,25 @@ var sqlOperators = map[string]*Operator{
 	"contains": {
 		Precedence: 6,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
-
 			l, lUndefined := evalToken(symbolTable, left)
 			if lUndefined != nil {
 				return "false", nil
 			}
+			r, rUndefined := evalToken(symbolTable, right)
+			if rUndefined != nil {
+				return "false", nil
+			}
+			rs := r.(string)
 
 			switch l.(type) {
 			case []interface{}:
 				jsn, _ := l.([]interface{})
 				for _, j := range jsn {
 					if s, ok := j.(string); ok {
-						if s == right {
+						if s == rs {
 							return "true", nil
 						}
 					}
-
 				}
 				return "false", nil
 			case interface{}:
@@ -88,7 +91,7 @@ var sqlOperators = map[string]*Operator{
 				if !ok {
 					return "false", nil
 				}
-				contains := strings.Contains(str, right)
+				contains := strings.Contains(str, rs)
 				if contains {
 					return "true", nil
 				}
@@ -103,6 +106,12 @@ var sqlOperators = map[string]*Operator{
 	"in": {
 		Precedence: 6,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
+			l, lUndefined := evalToken(symbolTable, left)
+			if lUndefined != nil {
+				return "false", nil
+			}
+			ls := l.(string)
+
 			r, rUndefined := evalToken(symbolTable, right)
 			if rUndefined != nil {
 				return "false", nil
@@ -113,11 +122,10 @@ var sqlOperators = map[string]*Operator{
 				jsn, _ := r.([]interface{})
 				for _, j := range jsn {
 					if s, ok := j.(string); ok {
-						if s == left {
+						if s == ls {
 							return "true", nil
 						}
 					}
-
 				}
 				return "false", nil
 			case interface{}:
@@ -125,7 +133,7 @@ var sqlOperators = map[string]*Operator{
 				if !ok {
 					return "false", nil
 				}
-				contains := strings.Contains(str, left)
+				contains := strings.Contains(str, ls)
 				if contains {
 					return "true", nil
 				}
