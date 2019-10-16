@@ -32,8 +32,48 @@ func evalToken(symbolTable interface{}, token string) (interface{}, error) {
 	return jq.Query(token)
 }
 
+func opIn(symbolTable interface{}, left string, right string) (string, error) {
+	l, lUndefined := evalToken(symbolTable, left)
+	if lUndefined != nil {
+		return "false", nil
+	}
+	ls := l.(string)
+
+	r, rUndefined := evalToken(symbolTable, right)
+	if rUndefined != nil {
+		return "false", nil
+	}
+
+	switch r.(type) {
+	case []interface{}:
+		jsn, _ := r.([]interface{})
+		for _, j := range jsn {
+			if s, ok := j.(string); ok {
+				if s == ls {
+					return "true", nil
+				}
+			}
+		}
+		return "false", nil
+	case interface{}:
+		str, ok := r.(string)
+		if !ok {
+			return "false", nil
+		}
+		contains := strings.Contains(str, ls)
+		if contains {
+			return "true", nil
+		}
+		return "false", nil
+
+	default:
+		return "false", nil
+	}
+
+}
+
 var sqlOperators = map[string]*Operator{
-	// Tokenizer will be responsible to put a space before and after each ')OR(', but not priORity.
+	// Tokenizer will be responsible to put a space before and after each ')OR(', but not priority.
 	"||": {
 		Precedence: 1,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
@@ -60,6 +100,62 @@ var sqlOperators = map[string]*Operator{
 				return "false", err
 			}
 			return strconv.FormatBool(l && r), nil
+		},
+	},
+	"contains": {
+		Precedence: 6,
+		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
+			l, lUndefined := evalToken(symbolTable, left)
+			if lUndefined != nil {
+				return "false", nil
+			}
+			r, rUndefined := evalToken(symbolTable, right)
+			if rUndefined != nil {
+				return "false", nil
+			}
+			rs := r.(string)
+
+			switch l.(type) {
+			case []interface{}:
+				jsn, _ := l.([]interface{})
+				for _, j := range jsn {
+					if s, ok := j.(string); ok {
+						if s == rs {
+							return "true", nil
+						}
+					}
+				}
+				return "false", nil
+			case interface{}:
+				str, ok := l.(string)
+				if !ok {
+					return "false", nil
+				}
+				contains := strings.Contains(str, rs)
+				if contains {
+					return "true", nil
+				}
+				return "false", nil
+
+			default:
+				return "false", nil
+			}
+
+		},
+	},
+	"in": {
+		Precedence: 6,
+		Eval:       opIn,
+	},
+	"notin": {
+		Precedence: 6,
+		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
+			s, err := opIn(symbolTable, left, right)
+			if err != nil {
+				return s, err
+			}
+			b, _ := strconv.ParseBool(s)
+			return strconv.FormatBool(!b), err
 		},
 	},
 	"is": {

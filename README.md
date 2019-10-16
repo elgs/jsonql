@@ -22,7 +22,7 @@ The following operators are added: (Credit goes to Ahmad Baitalmal)
 * isnot null
 
 Previously I was hoping to make the query as similar to SQL `WHERE` clause as possible. Later I found a problem parsing the term `PRIORITY>5`. The tokenizer split it as `PRI`, `OR`, `ITY`, `>`, `5`, since `OR` was then an operator, which is terribly wrong. At that point, I thought of two choices:				
-1. to force the query expression to contain at least one white space between tokens, thus `PRIORITY>5` should be written as `PRIORITY > 5`;		
+1. to force the query expression to contain at least one white space between tokens, thus `PRIORITY>5` should be written as `PRIORITY > 5`;
 2. to replace operators as follows:		
 
 * `AND` to `&&`
