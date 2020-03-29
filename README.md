@@ -19,8 +19,6 @@ The following are the operator mapings to SQL:
 * `RLIKE` to `~=`
 * `NOT RLIKE` to `!~=`
 
-I adopted the second choice as the new operators I believe are still quite intuitive to most programmers, rather than forcing to put white spaces between tokens.
-
 ## Install
 `go get -u github.com/elgs/jsonql`
 
