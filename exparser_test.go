@@ -18,6 +18,7 @@ func TestTokenize(t *testing.T) {
 		{"'123  456' 789", []string{"'123  456'", "789"}},
 		{`123 "456  789"`, []string{"123", "\"456  789\""}},
 		{`123 "456  '''789"`, []string{"123", "\"456  '''789\""}},
+		{`2*x+y is null`, []string{"2", "*", "x", "+", "y", "is", "null"}},
 	}
 	var fail = []struct {
 		in string

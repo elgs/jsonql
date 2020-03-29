@@ -6,25 +6,14 @@ This library enables query against JSON. Currently supported operators are: (pre
 ```
 ||
 &&
-= != > < >= <= ~= !~= is isnot
+= != > < >= <= ~= !~= is isnot contains
 + -
 * / %
 ^
 ( )
 ```
 
-## Changes
-
-The following operators are added: (Credit goes to Ahmad Baitalmal)
-* is defined
-* isnot defined
-* is null
-* isnot null
-
-Previously I was hoping to make the query as similar to SQL `WHERE` clause as possible. Later I found a problem parsing the term `PRIORITY>5`. The tokenizer split it as `PRI`, `OR`, `ITY`, `>`, `5`, since `OR` was then an operator, which is terribly wrong. At that point, I thought of two choices:				
-1. to force the query expression to contain at least one white space between tokens, thus `PRIORITY>5` should be written as `PRIORITY > 5`;		
-2. to replace operators as follows:		
-
+The following are the operators maping to SQL:
 * `AND` to `&&`
 * `OR`	to `||`
 * `RLIKE` to `~=`
@@ -127,6 +116,9 @@ func main() {
 	// [map[hobby:<nil> skills:[IC Electric design Verification] name:enny gender:f age:36]] <nil>
 
 	fmt.Println(parser.Query("hobby isnot null"))
-	// [map[name:sam gender:m age:1 hobby:dancing skills:[Eating Sleeping Crawling]]] <nil>
+  // [map[name:sam gender:m age:1 hobby:dancing skills:[Eating Sleeping Crawling]]] <nil>
+  
+  fmt.Println(parser.Query("skills contains 'Eating'"))
+  // [map[age:1 gender:m hobby:dancing name:sam skills:[Eating Sleeping Crawling]]] <nil>
 }
 ```

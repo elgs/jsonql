@@ -110,6 +110,27 @@ var sqlOperators = map[string]*Operator{
 			return "false", nil
 		},
 	},
+	"contains": {
+		Precedence: 5,
+		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
+			l, err := evalToken(symbolTable, left)
+			if err != nil {
+				return "false", err
+			}
+			r, err := evalToken(symbolTable, right)
+			if err != nil {
+				return "false", err
+			}
+			if al, ok := l.([]interface{}); ok {
+				for _, item := range al {
+					if item == r {
+						return "true", nil
+					}
+				}
+			}
+			return "false", nil
+		},
+	},
 	"=": {
 		Precedence: 5,
 		Eval: func(symbolTable interface{}, left string, right string) (string, error) {
