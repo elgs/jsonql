@@ -13,7 +13,7 @@ This library enables query against JSON. Currently supported operators are: (pre
 ( )
 ```
 
-The following are the operators maping to SQL:
+The following are the operator mapings to SQL:
 * `AND` to `&&`
 * `OR`	to `||`
 * `RLIKE` to `~=`
@@ -116,9 +116,9 @@ func main() {
 	// [map[hobby:<nil> skills:[IC Electric design Verification] name:enny gender:f age:36]] <nil>
 
 	fmt.Println(parser.Query("hobby isnot null"))
-  // [map[name:sam gender:m age:1 hobby:dancing skills:[Eating Sleeping Crawling]]] <nil>
-  
-  fmt.Println(parser.Query("skills contains 'Eating'"))
-  // [map[age:1 gender:m hobby:dancing name:sam skills:[Eating Sleeping Crawling]]] <nil>
+	// [map[name:sam gender:m age:1 hobby:dancing skills:[Eating Sleeping Crawling]]] <nil>
+
+	fmt.Println(parser.Query("skills contains 'Eating'"))
+	// [map[age:1 gender:m hobby:dancing name:sam skills:[Eating Sleeping Crawling]]] <nil>
 }
 ```
