@@ -120,3 +120,6 @@ func main() {
 	// [map[age:1 gender:m hobby:dancing name:sam skills:[Eating Sleeping Crawling]]] <nil>
 }
 ```
+
+## Query Expressions
+For details of query expressions, please read: https://github.com/elgs/gojq
