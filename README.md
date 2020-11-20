@@ -13,7 +13,7 @@ This library enables query against JSON. Currently supported operators are: (pre
 ( )
 ```
 
-The following are the operator mapings to SQL:
+The following are the operator mappings to SQL:
 * `AND` to `&&`
 * `OR`	to `||`
 * `RLIKE` to `~=`
